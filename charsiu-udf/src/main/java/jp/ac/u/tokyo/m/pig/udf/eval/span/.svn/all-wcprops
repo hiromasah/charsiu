@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span
+END
+GetDaySpan.java
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/GetDaySpan.java
+END
+SpanUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/SpanUtil.java
+END
+YearSpanMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/YearSpanMap.java
+END
+GetYearSpan.java
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/GetYearSpan.java
+END
+CacheDaySpanHashMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/CacheDaySpanHashMap.java
+END
+AddDaySpan.java
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/AddDaySpan.java
+END
+CacheYearSpanHashMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 164
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/CacheYearSpanHashMap.java
+END
+DaySpanMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/span/DaySpanMap.java
+END

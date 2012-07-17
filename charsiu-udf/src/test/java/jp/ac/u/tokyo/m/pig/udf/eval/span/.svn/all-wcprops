@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/test/java/jp/ac/u/tokyo/m/pig/udf/eval/span
+END
+GetDaySpanTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/test/java/jp/ac/u/tokyo/m/pig/udf/eval/span/GetDaySpanTest.java
+END
+SpanUtilTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/test/java/jp/ac/u/tokyo/m/pig/udf/eval/span/SpanUtilTest.java
+END
+GetYearSpanTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/test/java/jp/ac/u/tokyo/m/pig/udf/eval/span/GetYearSpanTest.java
+END
+CacheDaySpanHashMapTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/test/java/jp/ac/u/tokyo/m/pig/udf/eval/span/CacheDaySpanHashMapTest.java
+END
+AddDaySpanTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/test/java/jp/ac/u/tokyo/m/pig/udf/eval/span/AddDaySpanTest.java
+END
+CacheYearSpanHashMapTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/test/java/jp/ac/u/tokyo/m/pig/udf/eval/span/CacheYearSpanHashMapTest.java
+END

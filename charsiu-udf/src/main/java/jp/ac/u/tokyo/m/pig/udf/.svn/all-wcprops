@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf
+END
+DefinitionConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/DefinitionConstants.java
+END
+FormatConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/FormatConstants.java
+END
+AliasConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/AliasConstants.java
+END
+alias.ini
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/alias.ini
+END
+StoreConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/StoreConstants.java
+END
+BehaviorConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/BehaviorConstants.java
+END

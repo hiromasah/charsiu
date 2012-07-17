@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math
+END
+TupleMax.java
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMax.java
+END
+TupleFirst.java
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleFirst.java
+END
+TupleStringMin.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleStringMin.java
+END
+TupleStringMax.java
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleStringMax.java
+END
+TupleMin.java
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/todaiigakubu_hadoop/svn/!svn/ver/323/branches/PigUDFAttachedDPCSchema/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMin.java
+END
