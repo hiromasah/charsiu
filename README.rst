@@ -6,9 +6,11 @@ This UDF project is started for clinical epidemiologic study using Japanese Diag
  
 Quick Start
 ---------  
- ::
+
   Requiement Hadoop >=1.0.0, pig >=0.9.2
+
   Download https://github.com/downloads/hiromasah/charsiu/charsiu-udf-1.0.jar 
+
   Write "register /path/to/charsiu-udf-1.0.jar;" into Pig script.
  
 Update history
