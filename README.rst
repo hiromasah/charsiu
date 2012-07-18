@@ -1,8 +1,8 @@
 The University of Tokyo DPC data processing project (codename Charsiu)
 =======
  
- The charis is Apache Pig UDF library for data transformation from log data into a wide table format data. 
- This UDF project is started for clinical epidemiologic study using Japanese Diagnosis Procedure Combination Database data.
+The charis is Apache Pig UDF library for data transformation from log data into a wide table format data. 
+This UDF project is started for clinical epidemiologic study using Japanese Diagnosis Procedure Combination Database data.
  
 Quick Start
 ---------
