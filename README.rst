@@ -15,10 +15,12 @@ Quick Start
 
 AUTHOR
 -------
-product leader : Hiromasa Horiguchi (The University of Tokyo)
-contributer    : Tatsuya Nakamura (Kurusugawa Computer, Inc.)
-                 Taisuke Sato(Kurusugawa Computer, Inc.)
-                 Tetsu Nisikawa (Preferred Infrastructure)
+product leader 
+  Hiromasa Horiguchi (The University of Tokyo)
+contributer
+  Tatsuya Nakamura (Kurusugawa Computer, Inc.)
+  Taisuke Sato(Kurusugawa Computer, Inc.)
+  Tetsu Nisikawa (Preferred Infrastructure)
 
 LICENCE
 -------
