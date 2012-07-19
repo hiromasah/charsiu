@@ -20,7 +20,7 @@ product leader
 contributer
   Tatsuya Nakamura (Kurusugawa Computer, Inc.)
   Taisuke Sato(Kurusugawa Computer, Inc.)
-  Tetsu Nisikawa (Preferred Infrastructure)
+  Toru Nishikawa (Preferred Infrastructure)
 
 LICENCE
 -------
