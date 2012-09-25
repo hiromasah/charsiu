@@ -13,8 +13,6 @@ Quick Start
 
   Write "register /path/to/charsiu-udf-1.0.jar;" into Pig script.
 
-  If you need UDF detail, read WIKI ( https://github.com/hiromasah/charsiu/wiki ).
-
 AUTHOR
 -------
 product leader 
