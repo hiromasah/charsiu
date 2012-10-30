@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.resource;
 
 import java.io.FileNotFoundException;
@@ -14,16 +30,22 @@ public class ResourceLoadUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * aFileName に指定する同じパッケージ内の Ini を読み込みます。
-	 * 指定ファイルが存在しない場合はエラー。
+	 * This method read Ini in the same package. <br>
+	 * If the file does not exist, throws exception. <br>
+	 * <br>
+	 * aFileName に指定する同じパッケージ内の Ini を読み込みます。 <br>
+	 * 指定ファイルが存在しない場合はエラー。 <br>
 	 */
 	public static Ini loadNecessaryPackagePrivateIni(Class<?> aClass, String aFileName) {
 		return loadNecessaryIni(aClass, aFileName, aClass.getResourceAsStream(aFileName));
 	}
 
 	/**
-	 * aFileName に指定するjar内の Ini を読み込みます。
-	 * 指定ファイルが存在しない場合はエラー。
+	 * This method read Ini in the jar. <br>
+	 * If the file does not exist, throws exception. <br>
+	 * <br>
+	 * aFileName に指定するjar内の Ini を読み込みます。 <br>
+	 * 指定ファイルが存在しない場合はエラー。 <br>
 	 */
 	public static Ini loadNecessaryPublicIni(Class<?> aClass, String aFileName) {
 		return loadNecessaryIni(aClass, aFileName, aClass.getClassLoader().getResourceAsStream(aFileName));
@@ -38,8 +60,11 @@ public class ResourceLoadUtil {
 	}
 
 	/**
-	 * aFileName に指定する同じパッケージ内の Ini を読み込みます。
-	 * 指定ファイルが存在しない場合は警告のみ。
+	 * This method read Ini in the same package. <br>
+	 * If the file does not exist, logging WARN. <br>
+	 * <br>
+	 * aFileName に指定する同じパッケージ内の Ini を読み込みます。 <br>
+	 * 指定ファイルが存在しない場合は警告のみ。 <br>
 	 */
 	public static Ini loadUnnecessaryPackagePrivateIni(Class<?> aClass, String aFileName) {
 		try {
@@ -67,8 +92,11 @@ public class ResourceLoadUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * aFileName に指定する同じパッケージ内の Properties を読み込みます。
-	 * 指定ファイルが存在しない場合はエラー。
+	 * This method read Properties in the same package. <br>
+	 * If the file does not exist, throws exception. <br>
+	 * <br>
+	 * aFileName に指定する同じパッケージ内の Properties を読み込みます。 <br>
+	 * 指定ファイルが存在しない場合はエラー。 <br>
 	 */
 	public static Properties loadNecessaryPackagePrivateProperties(Class<?> aClass, String aFileName) {
 		try {
@@ -79,8 +107,11 @@ public class ResourceLoadUtil {
 	}
 
 	/**
-	 * aFileName に指定する同じパッケージ内の Properties を読み込みます。
-	 * 指定ファイルが存在しない場合は警告のみ。
+	 * This method read Properties in the same package. <br>
+	 * If the file does not exist, logging WARN. <br>
+	 * <br>
+	 * aFileName に指定する同じパッケージ内の Properties を読み込みます。 <br>
+	 * 指定ファイルが存在しない場合は警告のみ。 <br>
 	 */
 	public static Properties loadUnnecessaryPackagePrivateProperties(Class<?> aClass, String aFileName) {
 		try {

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.eval.math;
 
 import java.io.IOException;
@@ -17,7 +33,9 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
 /**
- * Bag 中で最初に検出された null でないタプルを出力します。
+ * TupleFirst outputs the tuple that is not detected null first in Bag. <br>
+ * 
+ * Bag 中で最初に検出された null でないタプルを出力します。 <br>
  */
 public class TupleFirst extends EvalFunc<Tuple> {
 
@@ -34,7 +52,7 @@ public class TupleFirst extends EvalFunc<Tuple> {
 		if (aInput == null)
 			return null;
 
-		// 処理対象
+		// processing target | 処理対象
 		DataBag tTargetBag = DataType.toBag(aInput.get(0));
 
 		for (Iterator<Tuple> tTargetBagIterater = tTargetBag.iterator(); tTargetBagIterater.hasNext();) {

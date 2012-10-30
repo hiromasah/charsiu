@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.log;
 
 import java.util.Arrays;
@@ -10,14 +26,16 @@ public class LogUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * "[aPrefix]\"[aParams[0]]\" \"[aParams[1]]\"... [aSuffix]" のログを出力します。
+	 * Output "[aPrefix]\"[aParams[0]]\" \"[aParams[1]]\"... [aSuffix]" format log. <br>
+	 * "[aPrefix]\"[aParams[0]]\" \"[aParams[1]]\"... [aSuffix]" のログを出力します。 <br>
 	 */
 	public static void infoMultiParam(Log aLog, String aPrefix, String aSuffix, List<? extends Object> aParams) {
 		aLog.info(createMultiParamMessage(aPrefix, aSuffix, aParams));
 	}
 
 	/**
-	 * "[aPrefix]\"[aParams[0]]\" \"[aParams[1]]\"... [aSuffix]" のログを出力します。
+	 * Output "[aPrefix]\"[aParams[0]]\" \"[aParams[1]]\"... [aSuffix]" format log. <br>
+	 * "[aPrefix]\"[aParams[0]]\" \"[aParams[1]]\"... [aSuffix]" のログを出力します。 <br>
 	 */
 	public static void errorMultiParam(Log aLog, String aPrefix, String aSuffix, List<? extends Object> aParams, Throwable aThrowable) {
 		aLog.error(createMultiParamMessage(aPrefix, aSuffix, aParams), aThrowable);
@@ -35,6 +53,9 @@ public class LogUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
+	 * I make the message which enumerated aParams. <br>
+	 * aParams を列挙したメッセージを作成します。 <br>
+	 * 
 	 * @param aPrefix
 	 *            接頭辞
 	 * @param aSuffix

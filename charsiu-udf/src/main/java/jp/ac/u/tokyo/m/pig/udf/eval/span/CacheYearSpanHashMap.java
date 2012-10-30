@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.eval.span;
 
 import java.text.ParseException;
@@ -51,7 +67,7 @@ public class CacheYearSpanHashMap implements YearSpanMap {
 
 		public BindingBaseDateYearSpanDictionary(String aBaseDate) throws ParseException {
 			Calendar tBaseDate = Calendar.getInstance();
-			tBaseDate.setTime(StringFormatConstants.FORMAT_DATE.parse(aBaseDate));
+			tBaseDate.setTime(StringFormatConstants.FORMAT_DATE.get().parse(aBaseDate));
 			mBaseDate = tBaseDate;
 			mDateMap = new HashMap<String, Integer>();
 		}
@@ -62,10 +78,10 @@ public class CacheYearSpanHashMap implements YearSpanMap {
 			if (tResultSpan == null) {
 				try {
 					Calendar tTargetDate = Calendar.getInstance();
-					tTargetDate.setTime(StringFormatConstants.FORMAT_DATE.parse(aTargetDate));
-					// span 計算
+					tTargetDate.setTime(StringFormatConstants.FORMAT_DATE.get().parse(aTargetDate));
+					// calculate span | span 計算
 					tResultSpan = SpanUtil.calcDifferenceAsYears(mBaseDate, tTargetDate);
-					// 登録
+					// registration | 登録
 					mDateMap.put(aTargetDate, tResultSpan);
 				} catch (ParseException e) {
 					throw new RuntimeException(e);

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.dpc.pig.udf.load;
 
 import java.io.IOException;
@@ -8,10 +24,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import jp.ac.u.tokyo.m.data.type.TypeStringCasterPigToPigTypeByte;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCColumnSchema;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCRowDataMapping;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCSchemaCacheLoader;
+import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.TypeStringCasterPigToPigTypeByte;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.DefinitionResourceLoadUtil;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.FileStatusWithVersion;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.LoadFileFilter;
@@ -41,8 +57,8 @@ import org.apache.pig.LoadFunc;
 import org.apache.pig.LoadMetadata;
 import org.apache.pig.PigException;
 import org.apache.pig.ResourceSchema;
-import org.apache.pig.ResourceStatistics;
 import org.apache.pig.ResourceSchema.ResourceFieldSchema;
+import org.apache.pig.ResourceStatistics;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigSplit;
 import org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil;
@@ -51,7 +67,9 @@ import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
 /**
- * HDFS上に特定構造で格納されている DPCデータ を、スキーマ情報付きで読み込みます。
+ * Reads and absorbs the differentce between the file format and the schema by year of DPC data.<br>
+ * <br>
+ * HDFS上に特定構造で格納されている DPCデータ を、スキーマ情報付きで読み込みます。<br>
  */
 public class LoadDPC extends LoadFunc implements LoadMetadata {
 
@@ -93,7 +111,7 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	@Override
 	public Tuple getNext() throws IOException {
 		try {
-			// 終端検出
+			// termination | 終端検出
 			boolean tNotDone = mInputRecordReader.nextKeyValue();
 			if (!tNotDone) {
 				return null;
@@ -136,7 +154,9 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	}
 
 	/**
-	 * aLocation に渡された LoadFilesFormat を解析して対象となる実際のファイルをジョブに設定する。
+	 * This method analyzes aLocation (LoadFilesFormat) and sets a target file list for a job. <br>
+	 * <br>
+	 * aLocation に渡された LoadFilesFormat を解析して対象となる実際のファイルをジョブに設定する。<br>
 	 * 
 	 * @param aLocation
 	 *            "load 'xxxx';" の xxxx の部分が渡される。
@@ -171,7 +191,9 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	/**
 	 * @param aLocation
 	 *            LoadFilesFormat '2004-2010' など
-	 * @return aLocation に含まれる全ての FileStatus
+	 * @return
+	 *         All FileStatus included in aLocation.<br>
+	 *         aLocation に含まれる全ての FileStatus<br>
 	 */
 	private List<FileStatus> getUnfilteredLoadTargetFileStatusList(String aLocation, Configuration tConfiguration, FileSystem tFileSystem) throws IOException {
 		Collection<String> tBaseDirectories = LoadFilesFormatParseUtil.parseLoadFilesFormat(aLocation, tConfiguration);
@@ -192,7 +214,9 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	}
 
 	/**
-	 * @return 現在の設定での FileStatus のフィルタ
+	 * @return
+	 *         Filter of FileStatus by the current setting<br>
+	 *         現在の設定での FileStatus のフィルタ<br>
 	 */
 	private LoadFileFilter createLoadFileFilter() throws IOException {
 		List<String> tLoadFilePatternStrings = DefinitionResourceLoadUtil.loadResource(PathUtil.createDefinitionFilesPath(mLoadTargetFileCategory));
@@ -202,7 +226,9 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	}
 
 	/**
-	 * @return .files に定義されるファイル名中の置換ワードの置換対象
+	 * @return
+	 *         List of substituted words defined by ".files"<br>
+	 *         .files に定義されるファイル名中の置換ワードの置換対象<br>
 	 */
 	private LinkedHashMap<String, String> getReplaceWords() {
 		LinkedHashMap<String, String> tReplaceWords = new LinkedHashMap<String, String>();
@@ -224,7 +250,8 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	}
 
 	/**
-	 * フルパスに直す機能を潰している。
+	 * disable a function that generate full path<br>
+	 * フルパスに直す機能を潰している。<br>
 	 */
 	@Override
 	public String relativeToAbsolutePath(String aLocation, Path tCurentDirectory) {

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.format;
 
 import java.util.ArrayList;
@@ -31,11 +47,13 @@ public class DefaultAdditionalParameterDefinitionFormat implements AdditionalPar
 		int tAdditionalParametersSize = tAdditionalParameters.size();
 		for (int tIndex = 0; tIndex < tAdditionalParametersSize;) {
 			String[] tTypeAlias = tAdditionalParameters.get(tIndex++).split(aAdditionalParameterSeparator);
+			// If a number of element is 1, set only alias. The Type is by default chararray
 			// 要素 1 なら alias のみ。型はデフォルトで chararray
 			if (tTypeAlias.length == 1) {
 				tAliases.add(tTypeAlias[0].trim());
 				tAdditionalParameterCasters.add(StringAdditionalParameterCaster.INSTANCE);
 			}
+			// If a number of element is 2, set alias : type.
 			// 要素 2 なら alias : type 。
 			else {
 				tAliases.add(tTypeAlias[0].trim());

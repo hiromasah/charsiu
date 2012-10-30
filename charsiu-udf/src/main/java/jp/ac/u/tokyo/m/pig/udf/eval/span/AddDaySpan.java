@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.eval.span;
 
 import java.io.IOException;
@@ -31,11 +47,11 @@ public class AddDaySpan extends EvalFunc<String> {
 
 	@Override
 	public String exec(Tuple aInput) throws IOException {
-		// 無効値
+		// invalid value | 無効値
 		if (aInput == null)
 			return null;
 
-		// 判定対象
+		// processing target | 処理対象
 		String tBaseDate = DataType.toString(aInput.get(0));
 		if (tBaseDate == null || tBaseDate.length() == 0)
 			return null;

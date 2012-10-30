@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.eval.span;
 
 import java.text.ParseException;
@@ -8,8 +24,10 @@ public class SpanUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * ２値間のミリ秒の差から日付の差を求めます。
-	 * 現状、利用される日付が HH:mm:ss SSS = 00:00:00 000 なので、単純に計算しています。
+	 * This method calculate difference of date from a couple of Calendar Object. <br>
+	 * <br>
+	 * ２値間のミリ秒の差から日付の差を求めます。 <br>
+	 * 現状、利用される日付が HH:mm:ss SSS = 00:00:00 000 なので、単純に計算しています。 <br>
 	 */
 	public static Integer calcDifferenceAsDays(Calendar aBaseDate, Calendar aTargetDate) {
 		long tDifference = aTargetDate.getTimeInMillis() - aBaseDate.getTimeInMillis();
@@ -20,7 +38,9 @@ public class SpanUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * aTarget に aAddDays の値の日数を加算します。
+	 * This method adds a value of aAddDays to aTarget. <br>
+	 * <br>
+	 * aTarget に aAddDays の値の日数を加算します。 <br>
 	 */
 	public static void addDays(Calendar aTarget, int aAddDays) {
 		aTarget.add(Calendar.DATE, aAddDays);
@@ -29,8 +49,10 @@ public class SpanUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * 2つの日付から年数の差を求めます。
-	 * 年齢の算出方法（翌年同日であれば1年経過と判定）と同じです。
+	 * This method calculate difference of years from a couple of Calendar Object. <br>
+	 * <br>
+	 * 2つの日付から年数の差を求めます。 <br>
+	 * 年齢の算出方法（翌年同日であれば1年経過と判定）と同じです。 <br>
 	 */
 	public static Integer calcDifferenceAsYears(Calendar aBaseDate, Calendar aTargetDate) throws ParseException {
 		if (aBaseDate.getTimeInMillis() > aTargetDate.getTimeInMillis()) {

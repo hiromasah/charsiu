@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.eval.group;
 
 import java.io.IOException;
@@ -32,8 +48,10 @@ import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 import org.apache.pig.impl.util.UDFContext;
 
 /**
- * Bag をグルーピングします。
- * グルーピングには GroupFilterFormat を利用します。
+ * Groups the Bag in accordance with the description in GroupFilterFormat.<br>
+ * 
+ * Bag をグルーピングします。<br>
+ * グルーピングには GroupFilterFormat を利用します。<br>
  */
 public class InnerGroup extends EvalFunc<Tuple> {
 
@@ -81,7 +99,7 @@ public class InnerGroup extends EvalFunc<Tuple> {
 
 	private void init(String aGroupFilterFormatString) {
 		mGroupFilterFormat = StockGroupFilterFormatFactory.INSTANCE.generateGroupFilterFormat(aGroupFilterFormatString);
-		// スキーマ情報引継
+		// Schema information transfer | スキーマ情報引継
 		Properties tProperties = UDFContext.getUDFContext().getUDFProperties(this.getClass());
 		StringBuilder tKeyBuilder = new StringBuilder();
 		tKeyBuilder.append(this.getClass().getName());
@@ -147,11 +165,11 @@ public class InnerGroup extends EvalFunc<Tuple> {
 		TupleFactory tTupleFactory = TupleFactory.getInstance();
 		BagFactory tBagFactory = DefaultBagFactory.getInstance();
 
-		// 処理対象
+		// processing target | 処理対象
 		DataBag tTarget = DataType.toBag(aInput.get(0));
 		DataBag tGroupColumn = DataType.toBag(aInput.get(1));
 
-		// InnerGroup の器
+		// InnerGroup container | InnerGroup の器
 		GroupFilterFormat tGroupFilterFormat = mGroupFilterFormat;
 		List<GroupFilterFormatGroup> tGroupList = tGroupFilterFormat.getGroupList();
 		LinkedHashMap<GroupFilterFormatGroup, List<Tuple>> tInnerGroupMap = new LinkedHashMap<GroupFilterFormatGroup, List<Tuple>>();
@@ -166,8 +184,12 @@ public class InnerGroup extends EvalFunc<Tuple> {
 		while (tGroupColumnIterator.hasNext()) {
 			String tCurrentGroupColumnValue = (String) tGroupColumnIterator.next().get(0);
 			Tuple tCurrentTargetTupleOrigin = tTargetIterator.next();
-			// NOTE なぜだか Pig は Bag を指定した eval UDF を並列に動かすと、Bag の中身が相互に影響しあう。元の Bag を渡してくれればいいだけなのに。
-			// しかたがないので、outputSchema の時点で元の Bag のスキーマからカラム数を記録し、その数だけカラムを引き継ぐ。
+			// The contents of Bag influence it mutually for some reason when Pig executes eval UDF which appointed Bag in parallel.
+			// As coping, I record the number of the columns from a schema of original Bag at the time of outputSchema, and only the number succeeds a column.
+			// The interference of the value disappears in this at least UDF implementing. It is all right to execute InnerGroup in parallel.
+			//
+			// NOTE なぜだか Pig は Bag を指定した eval UDF を並列に動かすと、Bag の中身が相互に影響しあう。
+			// 対処として、outputSchema の時点で元の Bag のスキーマからカラム数を記録し、その数だけカラムを引き継ぐ。
 			// 少なくともこの実装をする UDF 同士では値の干渉はなくなる。InnerGroup を並列に実行するのは大丈夫。
 			ArrayList<Object> tOriginBagColumns = new ArrayList<Object>();
 			Iterator<Object> tColumnIterator = tCurrentTargetTupleOrigin.getAll().iterator();
@@ -179,6 +201,7 @@ public class InnerGroup extends EvalFunc<Tuple> {
 			}
 			int[] tJoinedValueBagIndexes = mJoinedValueBagIndexes;
 			int[] tJoinedValueBagSizes = mJoinedValueBagSizes;
+			// When target JoinedValueBag does not exist, overwrite tModeOfTakeOutJoinedValue in ALL_GROUP.
 			// 対象とする JoinedValueBag が存在しない場合は tModeOfTakeOutJoinedValue を ALL_GROUP で上書きする。
 			ModeOfTakeOutJoinedValue tModeOfTakeOutJoinedValue =
 					tJoinedValueBagIndexes == null ? ModeOfTakeOutJoinedValue.ALL_GROUP : mModeOfTakeOutJoinedValue;
@@ -191,7 +214,7 @@ public class InnerGroup extends EvalFunc<Tuple> {
 			}
 		}
 
-		// 戻り値作成
+		// create return value | 戻り値作成
 		ArrayList<Object> tResultTupleList = new ArrayList<Object>();
 		for (GroupFilterFormatGroup tCurrentGFFGroup : tGroupList) {
 			tResultTupleList.add(tCurrentGFFGroup.getGroupName());
@@ -206,15 +229,15 @@ public class InnerGroup extends EvalFunc<Tuple> {
 		switch (aModeOfTakeOutJoinedValue) {
 		case OWN_GROUP:
 			// 「 Bag{ Tuple( group_name : chararray, ... ) } 」
-			// 上記構造を下記構造に変換
+			// convert above structure into following structure | 上記構造を下記構造に変換
 			// 「 ... 」
-			// 要素(0) は不要、要素(1) 以降を追加
+			// element 0 is unnecessary and adds element after 1 | 要素(0) は不要、要素(1) 以降を追加
 			return composeTransformedTuple(aCurrentGFFGroup, aOriginBagColumns, aJoinedValueBagIndexes, aJoinedValueBagSizes, 1);
 		case OWN_GROUP_WITH_GROUPNAME:
 			// 「 Bag{ Tuple( group_name : chararray, ... ) } 」
-			// 上記構造を下記構造に変換
+			// convert above structure into following structure | 上記構造を下記構造に変換
 			// 「 group_name : chararray, ... 」
-			// 要素(0) 以降を追加
+			// adds element after 0 | 要素(0) 以降を追加
 			return composeTransformedTuple(aCurrentGFFGroup, aOriginBagColumns, aJoinedValueBagIndexes, aJoinedValueBagSizes, 0);
 		default:
 			return aOriginBagColumns;
@@ -231,7 +254,7 @@ public class InnerGroup extends EvalFunc<Tuple> {
 		int tJoinedValueBagIndexesIndexLimit = aJoinedValueBagIndexes.length - 1;
 		for (int tIndex = 0; tIndex < tOriginBagColumnsSize; tIndex++) {
 			if (tIndex == aJoinedValueBagIndexes[tJoinedValueBagIndexesIndex]) {
-				// JoinedValueBag の位置なら
+				// if JoinedValueBag position | JoinedValueBag の位置なら
 				DataBag tCurrentTargetJoinedValueBag = (DataBag) aOriginBagColumns.get(tIndex);
 				Iterator<Tuple> tCurrentTargetJoinedValueBagIterator = tCurrentTargetJoinedValueBag.iterator();
 				Tuple tCurrentGroupJoinedValueTuple = null;
@@ -245,6 +268,7 @@ public class InnerGroup extends EvalFunc<Tuple> {
 						continue;
 				}
 				if (tCurrentGroupJoinedValueTuple == null) {
+					// When Tuple belonging to this tTargetGroupName does not exist, set null
 					// この tTargetGroupName に所属する Tuple が存在しない場合、 null 埋め
 					int tCurrentBagSize = aJoinedValueBagSizes[tJoinedValueBagIndexesIndex];
 					for (int tTupleIndex = 0; tTupleIndex < tCurrentBagSize; tTupleIndex++) {
@@ -293,7 +317,7 @@ public class InnerGroup extends EvalFunc<Tuple> {
 		FieldSchema tInputTarget = tInputFields.get(0);
 		Schema tInputTargetSchema = tInputTarget.schema;
 		try {
-			// 処理時に必要なスキーマ情報を記録する
+			// record necessary schema information at processing | 処理時に必要なスキーマ情報を記録する
 			Schema tTransformedTargetTupleSchema = commitSchemaInformation(tInputTargetSchema);
 
 			Schema tInnerSchema = new Schema();
@@ -305,10 +329,10 @@ public class InnerGroup extends EvalFunc<Tuple> {
 
 			List<GroupFilterFormatGroup> tGroupList = mGroupFilterFormat.getGroupList();
 			for (GroupFilterFormatGroup tCurrentGFFGroup : tGroupList) {
-				// グループ名
+				// Group Name | グループ名
 				tInnerSchema.add(new FieldSchema(tAliasGroupNamePrefix + tCurrentGFFGroup.getGroupName()
 						, tDataTypeChararray));
-				// 各グループの Bag の構造、つまり入力 Bag の構造
+				// Structure of Bag of each group that is structure of input Bag | 各グループの Bag の構造、つまり入力 Bag の構造
 				tInnerSchema.add(new FieldSchema(
 						tAliasGroupBagPrefix + tCurrentGFFGroup.getGroupName()
 						, tTransformedTargetTupleSchema, tDataTypeBag));
@@ -323,13 +347,18 @@ public class InnerGroup extends EvalFunc<Tuple> {
 		return tResultSchema;
 	}
 
-	// Mode に応じた 出力Schema の構築
+	/**
+	 * Construction of output Schema depending on Mode <br>
+	 * Mode に応じた 出力Schema の構築 <br>
+	 */
 	private Schema commitSchemaInformation(Schema aInputTargetSchema) throws FrontendException {
-		// exec のために元Bagのカラム数を記録
+		// record the number of input Bag columns for exec | exec のために元Bagのカラム数を記録
 		Properties tProperties = UDFContext.getUDFContext().getUDFProperties(this.getClass());
+		// Possibly this may become needless after pig-0.9.
 		// XXX pig-0.8系 から 0.9系 間の仕様変更に対応。もしかしたらこれが不要になってるかも知れない。
 		Schema tInputTargetTupleSchema = aInputTargetSchema.getFields().get(0).schema;
 		tProperties.setProperty(mKeyOriginalColumnNum, String.valueOf(tInputTargetTupleSchema.size()));
+		// record columns num and position of input Bag "<joined_value> : Bag{ Tuple( group_name : chararray ) }" for exec
 		// exec のために元Bagの <joined_value> : Bag{ Tuple( group_name : chararray ) } の 位置・カラム数 を記録。
 		ModeOfTakeOutJoinedValue tModeOfTakeOutJoinedValue = mModeOfTakeOutJoinedValue;
 		if (tModeOfTakeOutJoinedValue == ModeOfTakeOutJoinedValue.ALL_GROUP)
@@ -340,11 +369,13 @@ public class InnerGroup extends EvalFunc<Tuple> {
 		int tInputTargetTupleFieldsSize = tInputTargetTupleFields.size();
 		ArrayList<String> tTargetJoinedValueBagNames = mTargetJoinedValueBagNames;
 		String tValueJoinOutAliasInnerGroupName = AliasConstants.VALUE_JOIN_OUT_ALIAS_INNER_GROUP_NAME;
+		// rebuild a schema of aInputTargetSchema depending on Mode
 		// aInputTargetSchema のスキーマを Mode に応じて再構築
 		Schema tTransformedTargetTupleSchema = new Schema();
 		for (int tIndex = 0; tIndex < tInputTargetTupleFieldsSize; tIndex++) {
 			FieldSchema tCurrentInputTargetTupleFieldSchema = tInputTargetTupleFields.get(tIndex);
 			if (StringUtil.equalsWord(tCurrentInputTargetTupleFieldSchema.alias, tTargetJoinedValueBagNames)) {
+				// acquire alias of Field hoping that it is group_name of the "Bag{ Tuple( gourp_name : chararray ) }"
 				// Bag{ Tuple( gourp_name : chararray ) } の group_name であることを期待するフィールドの alias を取得
 				String tFirstFieldName = tCurrentInputTargetTupleFieldSchema.schema.getFields().get(0).schema.getFields().get(0).alias;
 				if (tFirstFieldName.equals(tValueJoinOutAliasInnerGroupName)) {
@@ -370,21 +401,23 @@ public class InnerGroup extends EvalFunc<Tuple> {
 	}
 
 	/**
-	 * @return 変換後の aInputTargetTupleFieldSchema の要素数
+	 * @return
+	 *         Number of element of aInputTargetTupleFieldSchema after the conversion <br>
+	 *         変換後の aInputTargetTupleFieldSchema の要素数 <br>
 	 */
 	private int composeTransformedSchema(ModeOfTakeOutJoinedValue aModeOfTakeOutJoinedValue, Schema aTransformedTargetTupleSchema, FieldSchema aInputTargetTupleFieldSchema) {
 		switch (aModeOfTakeOutJoinedValue) {
 		case OWN_GROUP:
 			// 「 Bag{ Tuple( group_name : chararray, ... ) } 」
-			// 上記構造を下記構造に変換
+			// convert above structure into following structure | 上記構造を下記構造に変換
 			// 「 ... 」
-			// 要素(0) は不要、要素(1) 以降を追加
+			// element 0 is unnecessary and adds element after 1 | 要素(0) は不要、要素(1) 以降を追加
 			return appendSchemas(aTransformedTargetTupleSchema, aInputTargetTupleFieldSchema, 1);
 		case OWN_GROUP_WITH_GROUPNAME:
 			// 「 Bag{ Tuple( group_name : chararray, ... ) } 」
-			// 上記構造を下記構造に変換
+			// convert above structure into following structure | 上記構造を下記構造に変換
 			// 「 group_name : chararray, ... 」
-			// 要素(0) 以降を追加
+			// adds element after 0 | 要素(0) 以降を追加
 			return appendSchemas(aTransformedTargetTupleSchema, aInputTargetTupleFieldSchema, 0);
 		default:
 			return 0;

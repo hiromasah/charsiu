@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.store;
 
 import java.io.IOException;
@@ -10,9 +26,9 @@ import jp.ac.u.tokyo.m.string.StringFormatConstants;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.pig.ResourceSchema;
+import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.ResourceStatistics;
 import org.apache.pig.StoreMetadata;
-import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.backend.datastorage.DataStorage;
 import org.apache.pig.backend.datastorage.ElementDescriptor;
 import org.apache.pig.backend.hadoop.datastorage.ConfigurationUtil;
@@ -21,7 +37,9 @@ import org.apache.pig.builtin.PigStorage;
 import org.apache.pig.data.DataType;
 
 /**
- * データと共にエイリアスを出力します。
+ * StoreDataWithSchema outputs alias with data. <br>
+ * <br>
+ * データと共にエイリアスを出力します。<br>
  */
 public class StoreDataWithSchema extends PigStorage implements StoreMetadata {
 
@@ -45,7 +63,7 @@ public class StoreDataWithSchema extends PigStorage implements StoreMetadata {
 
 	@Override
 	public void storeSchema(ResourceSchema aSchema, String aLocation, Job aJob) throws IOException {
-		// .header と .schema を出力する
+		// outputs .header and .schema | .header と .schema を出力する
 		Configuration tConfiguration = aJob.getConfiguration();
 		DataStorage tStorage = new HDataStorage(ConfigurationUtil.toProperties(tConfiguration));
 		ElementDescriptor tHeaderFilePath = tStorage.asElement(aLocation, StoreConstants.STORE_FILE_NAME_HEADER);
@@ -55,7 +73,7 @@ public class StoreDataWithSchema extends PigStorage implements StoreMetadata {
 		String tFieldDelimiter = mFieldDelimiter;
 		String tRecordDelimiter = StoreConstants.STORE_DELIMITER_RECORD;
 		try {
-			// aSchema の1層目の name を取得して出力する。
+			// outputs name of 1st layer of aSchema | aSchema の1層目の name を取得して出力する。
 			ResourceFieldSchema[] tFields = aSchema.getFields();
 			int tFieldLength = tFields.length;
 			if (tFieldLength > 0) {

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.eval.math;
 
 import java.io.IOException;
@@ -17,9 +33,13 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
 /**
- * Bag と、その Bag の順序に対応した比較可能値の Bag から、比較可能値が最大となる Tuple を Bag にまとめて出力します。
- * 
- * この実装クラスでは 文字列 の比較を担当します。
+ * From Bag of the comparable value corresponding to the order of Bag and the Bag, a comparable value outputs Tuple becoming maximum in a mass in Bag. <br>
+ * <br>
+ * This implementation class is in charge of a String comparison. <br>
+ * <br>
+ * Bag と、その Bag の順序に対応した比較可能値の Bag から、比較可能値が最大となる Tuple を Bag にまとめて出力します。 <br>
+ * <br>
+ * この実装クラスでは 文字列 の比較を担当します。 <br>
  */
 public class TupleStringMax extends EvalFunc<DataBag> {
 
@@ -33,11 +53,11 @@ public class TupleStringMax extends EvalFunc<DataBag> {
 
 	@Override
 	public DataBag exec(Tuple aInput) throws IOException {
-		// 無効値
+		// invalid value | 無効値
 		if (aInput == null)
 			return DefaultBagFactory.getInstance().newDefaultBag();
 
-		// 処理対象
+		// processing target | 処理対象
 		DataBag tTargetBag = DataType.toBag(aInput.get(0));
 		DataBag tComparableValueBag = DataType.toBag(aInput.get(1));
 		if (tTargetBag.size() == 0 || tComparableValueBag.size() == 0)
@@ -65,10 +85,12 @@ public class TupleStringMax extends EvalFunc<DataBag> {
 			if (tCurrentValue == null)
 				continue;
 			int tCompareResult = tCurrentValue.compareTo(tMaxValue);
+			// add a tuple to tProtoBag if the same as existing MaxValue
 			// 現 MaxValue と同じなら、タプルを tProtoBag に追加
 			if (tCompareResult == 0) {
 				tProtoBag.add(tCurrentTargetTuple);
 			}
+			// clear tProtoBag if bigger than existing MaxValue and add a tuple to tProtoBag
 			// 現 MaxValue より大きいなら、tProtoBag をクリアし、タプルを tProtoBag に追加
 			else if (tCompareResult > 0) {
 				tMaxValue = tCurrentValue;

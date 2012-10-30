@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.pig.udf.filter;
 
 import java.io.IOException;
@@ -17,7 +33,9 @@ import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 
 /**
- * GroupFilterFormat に含まれる要素だけフィルタ染ます。
+ * Exists filters only an element included in GroupFilterFormat. <br>
+ * <br>
+ * GroupFilterFormat に含まれる要素だけフィルタします。<br>
  */
 public class Exists extends FilterFunc {
 
@@ -38,7 +56,7 @@ public class Exists extends FilterFunc {
 		List<String> tExclusionWords = mExclusionWords = new ArrayList<String>();
 		for (String tCurrentExclusionWords : aExclusionWords.split(FormatConstants.WORD_SEPARATOR)) {
 			tCurrentExclusionWords = StringUtil.trimMultiByteCharacter(tCurrentExclusionWords);
-			if(tCurrentExclusionWords.length() > 0)
+			if (tCurrentExclusionWords.length() > 0)
 				tExclusionWords.add(tCurrentExclusionWords);
 		}
 	}
@@ -50,26 +68,26 @@ public class Exists extends FilterFunc {
 		if (aInput == null)
 			return false;
 
-		// 判定対象
+		// processing target | 処理対象
 		String tTarget = DataType.toString(aInput.get(0));
 		if (tTarget == null)
 			return false;
 
-		// 有効判定用
+		// list for effective judgments | 有効判定用
 		List<String> tExpectWordList = mGroupFilterFormat.getFilterList();
 
-		// 有効ワード判定
+		// effective word judgment | 有効ワード判定
 		if (!StringUtil.startsWithWord(tTarget, tExpectWordList))
 			return false;
 
-		// 無効ワード判定
+		// invalid word judgment | 無効ワード判定
 		List<String> tExclusionWords = mExclusionWords;
 		if (tExclusionWords != null) {
 			if (StringUtil.startsWithWord(tTarget, tExclusionWords))
 				return false;
 		}
 
-		// 到達すれば true
+		// return true if arrive here | 到達すれば true
 		return true;
 	}
 

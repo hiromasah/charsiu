@@ -1,24 +1,43 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.dpc.pig.udf.load.path;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import jp.ac.u.tokyo.m.string.StringUtil;
 
 import org.apache.hadoop.fs.Path;
 
 /**
- * 1インスタンスは 1 File/Directory を担当し、子 -> 親 ... の数珠繋ぎ構造を持ちます。
+ * 1 instance is in charge of 1 File/Directory. <br>
+ * This class structure "child -> parent ...". <br>
+ * <br>
+ * 1インスタンスは 1 File/Directory を担当し、子 -> 親 ... の数珠繋ぎ構造を持ちます。 <br>
  */
 public class DirectoryNameElements {
 	private final DirectoryNameElements mParentDirectory;
 	private final String mCurrentContentNameOriginal;
 	private final String mCurrentContentName;
 	/**
-	 * replace-word の出現順序
+	 * appearance order of replace-word | replace-word の出現順序
 	 */
 	private final List<String> mReplaceWordsSequence;
 
@@ -48,7 +67,7 @@ public class DirectoryNameElements {
 	public void setReplaceWordSequence(String aTarget,
 			LinkedHashMap<String, String> aReplaceWords,
 			List<String> aResultReplaceWordsSequence) {
-		// aReplaceWords の出現順序を保存
+		// record the appearance order of aReplaceWords | aReplaceWords の出現順序を保存
 		TreeMap<Integer, String> tReplaceWordIndexes = new TreeMap<Integer, String>();
 		for (Entry<String, String> tCurrentReplaceWord : aReplaceWords.entrySet()) {
 			String tKey = tCurrentReplaceWord.getKey();

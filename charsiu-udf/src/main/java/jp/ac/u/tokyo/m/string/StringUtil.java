@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.string;
 
 import java.util.HashMap;
@@ -9,11 +25,14 @@ public class StringUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * aTarget をトリムします。トリムの対象には全角スペース '　' も含みます。
+	 * This method trim aTarget. Double-byte space '　' is targeted for a trim, too. <br>
+	 * aTarget をトリムします。トリムの対象には全角スペース '　' も含みます。<br>
 	 * 
 	 * @param aTarget
 	 *            トリム対象
-	 * @return トリムした文字列
+	 * @return
+	 *         trimmed string<br>
+	 *         トリムした文字列<br>
 	 */
 	public static String trimMultiByteCharacter(String aTarget) {
 		char[] tTargetValue = aTarget.toCharArray();
@@ -33,10 +52,14 @@ public class StringUtil {
 
 	/**
 	 * @param aTarget
-	 *            対象文字列
+	 *            target string<br>
+	 *            対象文字列<br>
 	 * @param aReplaceWords
-	 *            置換対応マップ
-	 * @return aTarget を aReplaceWords(key を value で置換) で置換した文字列
+	 *            substitution pattern map<br>
+	 *            置換対応マップ<br>
+	 * @return
+	 *         String that replaced aReplaceWords(key -> value) in aTarget<br>
+	 *         aTarget を aReplaceWords(key を value で置換) で置換した文字列<br>
 	 */
 	public static String replaceWords(String aTarget, HashMap<String, String> aReplaceWords) {
 		for (Entry<String, String> tCurrentReplaceSet : aReplaceWords.entrySet()) {
@@ -49,10 +72,13 @@ public class StringUtil {
 
 	/**
 	 * @param aTarget
-	 *            対象文字列
+	 *            target string<br>
+	 *            対象文字列<br>
 	 * @param aExpectWordList
 	 *            期待する文字列
-	 * @return aTarget が aExpectWordList のどれかで始まっていれば true
+	 * @return
+	 *         If aTarget starts with the items that appear in aExpectWordList, return true.<br>
+	 *         aTarget が aExpectWordList のどれかで始まっていれば true<br>
 	 */
 	public static boolean startsWithWord(String aTarget, List<String> aExpectWordList) {
 		for (String tCurrentExpectWord : aExpectWordList) {
@@ -64,10 +90,13 @@ public class StringUtil {
 
 	/**
 	 * @param aTarget
-	 *            対象文字列
+	 *            target string<br>
+	 *            対象文字列<br>
 	 * @param aExpectWordList
-	 *            期待する文字列
-	 * @return aTarget が aExpectWordList のどれかと一致すれば true
+	 *            期待する文字列<br>
+	 * @return
+	 *         If aTarget accords with the items that appear in aExpectWordList, return true.<br>
+	 *         aTarget が aExpectWordList のどれかと一致すれば true<br>
 	 */
 	public static boolean equalsWord(String aTarget, List<String> aExpectWordList) {
 		for (String tCurrentExpectWord : aExpectWordList) {
@@ -81,7 +110,8 @@ public class StringUtil {
 
 	/**
 	 * @param aTarget
-	 *            対象文字列
+	 *            target string<br>
+	 *            対象文字列<br>
 	 * @param aPrefix
 	 *            接頭辞
 	 * @param aSuffix
@@ -98,8 +128,10 @@ public class StringUtil {
 
 	/**
 	 * @param aTarget
-	 *            対象文字列
-	 * @return 正規表現グループ用に "(" + aTarget + ")" した文字列
+	 *            target string<br>
+	 *            対象文字列<br>
+	 * @return
+	 *         正規表現グループ用に "(" + aTarget + ")" した文字列<br>
 	 */
 	public static String quoteRegularExpressionGroup(String aTarget) {
 		return quoteString(aTarget, "(", ")");

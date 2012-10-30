@@ -16,18 +16,24 @@ Quick Start
 AUTHOR
 -------
 product leader 
-  Hiromasa Horiguchi (The University of Tokyo)
+* Hiromasa Horiguchi (The University of Tokyo)
 contributer
-  Tatsuya Nakamura (Kurusugawa Computer, Inc.)
-  Taisuke Sato(Kurusugawa Computer, Inc.)
-  Toru Nishikawa (Preferred Infrastructure)
+* Tatsuya Nakamura (Kurusugawa Computer, Inc.)
+* Taisuke Sato (Kurusugawa Computer, Inc.)
+* Toru Nishikawa (Preferred Infrastructure)
 
 LICENCE
 -------
-Apache
+Apache License Version 2.0
 
 Update history
 ---------
+Release charsiu-udf-1.0/charsiu-dpc-2010.0 2012/10/31
+~~~~~~~~~
+* several bug fixes
+* add license text
+* setting for maven report
+
 Release 0.1.0 2012/7/1
 ~~~~~~~~~
 initial release

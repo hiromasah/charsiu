@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.dpc.pig.udf.load.path;
 
 import java.util.regex.Matcher;
@@ -27,9 +43,11 @@ public class PathUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
+	 * return SchemaFile path. <br>
+	 * <br>
 	 * aTargetFileCategory が "e" or "f" の場合で、aTargetFilePath のファイル名が IE or En, IF or Fn で始まる場合、
-	 * 同じ年の同系統のファイルでもスキーマに差異があるため、それぞれのファイルに対応したスキーマファイルを返す。
-	 * 上記以外の場合は getSchemaFilePath と同じ動作だが、MasterSchema の年を指定する機能が無いため、ReadSchema の取得のみに利用する。
+	 * 同じ年の同系統のファイルでもスキーマに差異があるため、それぞれのファイルに対応したスキーマファイルを返す。<br>
+	 * 上記以外の場合は getSchemaFilePath と同じ動作だが、MasterSchema の年を指定する機能が無いため、ReadSchema の取得のみに利用する。<br>
 	 * 
 	 * @param aTargetFilePath
 	 *            対象となるファイルのパス。

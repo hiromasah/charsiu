@@ -16,15 +16,39 @@
 
 package jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping;
 
-public class IntegerCaster extends AbstractNumberCaster {
+import jp.ac.u.tokyo.m.data.type.AbstractPigTypeStringCaster;
 
-	public static final IntegerCaster INSTANCE = new IntegerCaster();
+import org.apache.pig.data.DataType;
 
-	private IntegerCaster() {};
+public class TypeStringCasterPigToPigTypeByte extends AbstractPigTypeStringCaster<Byte> {
+
+	public static final TypeStringCasterPigToPigTypeByte INSTANCE = new TypeStringCasterPigToPigTypeByte();
+
+	private TypeStringCasterPigToPigTypeByte() {}
 
 	@Override
-	public Object castNumber(String aDataString) {
-		return Integer.parseInt(aDataString);
+	public Byte caseDouble() {
+		return DataType.DOUBLE;
+	}
+
+	@Override
+	public Byte caseFloat() {
+		return DataType.FLOAT;
+	}
+
+	@Override
+	public Byte caseInt() {
+		return DataType.INTEGER;
+	}
+
+	@Override
+	public Byte caseLong() {
+		return DataType.LONG;
+	}
+
+	@Override
+	public Byte caseString() {
+		return DataType.CHARARRAY;
 	}
 
 }

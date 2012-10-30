@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.ac.u.tokyo.m.dpc.pig.udf.load.path;
 
 import java.io.BufferedReader;
@@ -23,7 +39,9 @@ public class DefinitionResourceLoadUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * jar 中のリソースファイルを読み込んで、コメント行と空行を除外した有効行だけをリストに納めて返す。
+	 * This method reads a resource file. This method return available line list that excluded a comment line and an empty line.<br>
+	 * <br>
+	 * jar 中のリソースファイルを読み込んで、コメント行と空行を除外した有効行だけをリストに納めて返す。<br>
 	 */
 	public static List<String> loadResource(String aResourcePath) throws IOException {
 		ArrayList<String> tResult = new ArrayList<String>();
@@ -59,11 +77,15 @@ public class DefinitionResourceLoadUtil {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * .schema 形式のファイルに特化した load メソッド。
-	 * 結果は DPCSchema として返す。
-	 * コメント行は # か ;（セミコロン） で始まるもの。
-	 * リソースは jar 中に納められていること。
-	 * name と type の区切り文字は :（コロン）。
+	 * This method is ".schema" file loader. <br>
+	 * Comment line starts with "#" or ";". <br>
+	 * Separator character of name and type is ":" <br>
+	 * <br>
+	 * .schema 形式のファイルに特化した load メソッド。<br>
+	 * 結果は DPCSchema として返す。<br>
+	 * コメント行は # か ;（セミコロン） で始まるもの。<br>
+	 * リソースは jar 中に納められていること。<br>
+	 * name と type の区切り文字は :（コロン）。<br>
 	 */
 	public static DPCSchema loadSchemaResource(String aResourcePath) throws IOException {
 		ArrayList<DPCColumnSchema> tResultColumnSchemaList = new ArrayList<DPCColumnSchema>();
