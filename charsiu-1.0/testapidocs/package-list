@@ -1,0 +1,10 @@
+jp.ac.u.tokyo.m.calendar
+jp.ac.u.tokyo.m.ini
+jp.ac.u.tokyo.m.pig.udf.eval.group
+jp.ac.u.tokyo.m.pig.udf.eval.join
+jp.ac.u.tokyo.m.pig.udf.eval.math
+jp.ac.u.tokyo.m.pig.udf.eval.sequence
+jp.ac.u.tokyo.m.pig.udf.eval.span
+jp.ac.u.tokyo.m.pig.udf.filter
+jp.ac.u.tokyo.m.pig.udf.format
+jp.ac.u.tokyo.m.test

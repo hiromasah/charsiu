@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>charsiu-dpc - Checkstyle report</title>
+    <link>${project.url}</link>
+    <description>charsiu-dpc - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2012</copyright>
+    <item>
+      <title>File: 27,
+             Errors: 1563,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>${project.url}/checkstyle.html</link>
+      <description>
+        <p>Click <a href="${project.url}/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCRowDataMapping.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/DPCRowDataMapping.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  53
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.LongCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/LongCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.LoadDPC.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/LoadDPC.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  317
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.PathConstants.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/PathConstants.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  62
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCSchemaCacheLoader.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/DPCSchemaCacheLoader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  90
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.FileStatusWithVersion.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/FileStatusWithVersion.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  37
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.IntegerCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/IntegerCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  17
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DoubleCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/DoubleCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.AbstractNumberCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/AbstractNumberCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.FloatCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/FloatCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.MultiFileInputFormat.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/MultiFileInputFormat.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  42
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.DefinitionResourceLoadUtil.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/DefinitionResourceLoadUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  126
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.LoadFilesFormatParseUtil.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/LoadFilesFormatParseUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  120
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.specific.SpecificConstants.java">jp/ac/u/tokyo/m/dpc/specific/SpecificConstants.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  52
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCColumnSchema.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/DPCColumnSchema.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  37
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCSchema.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/DPCSchema.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.NullColumn.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/NullColumn.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.TypeStringCasterPigToColumnDataCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/TypeStringCasterPigToColumnDataCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  33
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.TypeStringCasterPigToPigTypeByte.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/TypeStringCasterPigToPigTypeByte.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  33
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.ColumnDataCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/ColumnDataCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.PathUtil.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/PathUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  146
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.IndexColumn.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/IndexColumn.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.ThroughCaster.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/ThroughCaster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.LoadFileFilter.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/LoadFileFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  109
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.path.DirectoryNameElements.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/path/DirectoryNameElements.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  116
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.specific.LoadTermUtil.java">jp/ac/u/tokyo/m/dpc/specific/LoadTermUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  19
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.ResultColumn.java">jp/ac/u/tokyo/m/dpc/pig/udf/load/mapping/ResultColumn.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

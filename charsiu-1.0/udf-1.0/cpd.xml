@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+<duplication lines="23" tokens="160">
+<file line="110" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMax.java"/>
+<file line="110" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMin.java"/>
+<codefragment>
+<![CDATA[
+		addFuncSpec(tFuncList, DataType.CHARARRAY, TupleStringMax.class.getName());
+		return tFuncList;
+	}
+
+	private void addFuncSpec(List<FuncSpec> aFuncList, byte aDataType, String aClassName) throws FrontendException {
+		Schema tSchema = new Schema();
+		tSchema.add(new Schema.FieldSchema(null, DataType.BAG));
+		tSchema.add(new Schema.FieldSchema(null, new Schema(new Schema.FieldSchema(null, aDataType)), DataType.BAG));
+		aFuncList.add(new FuncSpec(aClassName, tSchema));
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	// Bag{ InputTuple }
+	@Override
+	public Schema outputSchema(Schema aInput) {
+		List<FieldSchema> tInputFields = aInput.getFields();
+		FieldSchema tInputTarget = tInputFields.get(0);
+
+		Schema tBagSchema = new Schema();
+		try {
+			Schema tInputTargetSchema = tInputTarget.schema.getFields().get(0).schema;
+			tBagSchema.add(new FieldSchema(AliasConstants.TUPLE_MAX_OUT_ALIAS_TOP, tInputTargetSchema, DataType.BAG));
+]]>
+</codefragment>
+</duplication>
+<duplication lines="24" tokens="127">
+<file line="52" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMax.java"/>
+<file line="52" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMin.java"/>
+<codefragment>
+<![CDATA[
+	public TupleMax() {
+		super();
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Override
+	public DataBag exec(Tuple aInput) throws IOException {
+		// invalid value | 無効値
+		if (aInput == null)
+			return DefaultBagFactory.getInstance().newDefaultBag();
+
+		// processing target | 処理対象
+		DataBag tTargetBag = DataType.toBag(aInput.get(0));
+		DataBag tComparableValueBag = DataType.toBag(aInput.get(1));
+		if (tTargetBag.size() == 0 || tComparableValueBag.size() == 0)
+			return DefaultBagFactory.getInstance().newDefaultBag();
+
+		Iterator<Tuple> tTargetBagIterator = tTargetBag.iterator();
+		Iterator<Tuple> tComparableValueBagIterator = tComparableValueBag.iterator();
+
+		ArrayList<Tuple> tProtoBag = new ArrayList<Tuple>();
+
+		Double tMaxValue = Double.NEGATIVE_INFINITY;
+]]>
+</codefragment>
+</duplication>
+<duplication lines="24" tokens="127">
+<file line="48" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleStringMax.java"/>
+<file line="48" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleStringMin.java"/>
+<codefragment>
+<![CDATA[
+	public TupleStringMax() {
+		super();
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Override
+	public DataBag exec(Tuple aInput) throws IOException {
+		// invalid value | 無効値
+		if (aInput == null)
+			return DefaultBagFactory.getInstance().newDefaultBag();
+
+		// processing target | 処理対象
+		DataBag tTargetBag = DataType.toBag(aInput.get(0));
+		DataBag tComparableValueBag = DataType.toBag(aInput.get(1));
+		if (tTargetBag.size() == 0 || tComparableValueBag.size() == 0)
+			return DefaultBagFactory.getInstance().newDefaultBag();
+
+		Iterator<Tuple> tTargetBagIterator = tTargetBag.iterator();
+		Iterator<Tuple> tComparableValueBagIterator = tComparableValueBag.iterator();
+
+		ArrayList<Tuple> tProtoBag = new ArrayList<Tuple>();
+
+		String tMaxValue = null;
+]]>
+</codefragment>
+</duplication>
+<duplication lines="22" tokens="126">
+<file line="52" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMax.java"/>
+<file line="52" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMin.java"/>
+<file line="48" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleStringMax.java"/>
+<file line="48" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleStringMin.java"/>
+<codefragment>
+<![CDATA[
+	public TupleMax() {
+		super();
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Override
+	public DataBag exec(Tuple aInput) throws IOException {
+		// invalid value | 無効値
+		if (aInput == null)
+			return DefaultBagFactory.getInstance().newDefaultBag();
+
+		// processing target | 処理対象
+		DataBag tTargetBag = DataType.toBag(aInput.get(0));
+		DataBag tComparableValueBag = DataType.toBag(aInput.get(1));
+		if (tTargetBag.size() == 0 || tComparableValueBag.size() == 0)
+			return DefaultBagFactory.getInstance().newDefaultBag();
+
+		Iterator<Tuple> tTargetBagIterator = tTargetBag.iterator();
+		Iterator<Tuple> tComparableValueBagIterator = tComparableValueBag.iterator();
+
+		ArrayList<Tuple> tProtoBag = new ArrayList<Tuple>();
+]]>
+</codefragment>
+</duplication>
+<duplication lines="21" tokens="123">
+<file line="90" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMax.java"/>
+<file line="90" path="/home/hadoop/workspace/eclipse_workspace/charsiu_workspace/charsiu/charsiu-udf/src/main/java/jp/ac/u/tokyo/m/pig/udf/eval/math/TupleMin.java"/>
+<codefragment>
+<![CDATA[
+				tMaxValue = tCurrentValue;
+				tProtoBag.clear();
+				tProtoBag.add(tCurrentTargetTuple);
+			}
+		}
+
+		return DefaultBagFactory.getInstance().newDefaultBag(tProtoBag);
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Override
+	public List<FuncSpec> getArgToFuncMapping() throws FrontendException {
+		List<FuncSpec> tFuncList = new ArrayList<FuncSpec>();
+		String tThisClassName = this.getClass().getName();
+		addFuncSpec(tFuncList, DataType.DOUBLE, tThisClassName);
+		addFuncSpec(tFuncList, DataType.FLOAT, tThisClassName);
+		addFuncSpec(tFuncList, DataType.LONG, tThisClassName);
+		addFuncSpec(tFuncList, DataType.INTEGER, tThisClassName);
+		addFuncSpec(tFuncList, DataType.BYTEARRAY, tThisClassName);
+		addFuncSpec(tFuncList, DataType.CHARARRAY, TupleStringMax.class.getName());
+]]>
+</codefragment>
+</duplication>
+</pmd-cpd>
