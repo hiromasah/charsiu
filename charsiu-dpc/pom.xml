@@ -27,7 +27,7 @@
 
 	<artifactId>charsiu-dpc</artifactId>
 	<name>charsiu-dpc</name>
-	<version>2010.0</version>
+	<version>2011.0</version>
 
 	<build>
 		<resources>

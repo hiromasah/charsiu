@@ -28,6 +28,10 @@ Apache License Version 2.0
 
 Update history
 ---------
+Release charsiu-dpc-2011.0 2012/12/13
+~~~~~~~~~
+* add DPC schema of 2011
+
 Release charsiu-udf-1.0/charsiu-dpc-2010.0 2012/10/31
 ~~~~~~~~~
 * several bug fixes
