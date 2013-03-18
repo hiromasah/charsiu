@@ -17,12 +17,15 @@
 package jp.ac.u.tokyo.m.dpc.pig.udf.load;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCColumnSchema;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCRowDataMapping;
@@ -35,6 +38,7 @@ import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.LoadFilesFormatParseUtil;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.MultiFileInputFormat;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.PathConstants;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.PathUtil;
+import jp.ac.u.tokyo.m.dpc.specific.SpecificConstants;
 import jp.ac.u.tokyo.m.ini.Ini;
 import jp.ac.u.tokyo.m.ini.Ini.Section;
 import jp.ac.u.tokyo.m.log.LogUtil;
@@ -45,6 +49,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.s3native.NativeS3FileSystem;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -65,6 +70,7 @@ import org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
+import org.apache.pig.impl.util.UDFContext;
 
 /**
  * Reads and absorbs the differentce between the file format and the schema by year of DPC data.<br>
@@ -161,10 +167,21 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	 * @param aLocation
 	 *            "load 'xxxx';" の xxxx の部分が渡される。
 	 */
+	@SuppressWarnings("resource")
 	@Override
 	public void setLocation(String aLocation, Job aJob) throws IOException {
 		Configuration tConfiguration = aJob.getConfiguration();
-		FileSystem tFileSystem = FileSystem.get(tConfiguration);
+		// FileSystem tFileSystem = FileSystem.get(tConfiguration);
+		NativeS3FileSystem tNS3FS = new NativeS3FileSystem();
+		Properties tProperties = UDFContext.getUDFContext().getUDFProperties(this.getClass());
+		String tS3PathTargetRoot = tProperties.getProperty(SpecificConstants.CONFIGURATION_KEY_DPC_DATA_S3_PATH
+				, SpecificConstants.DPC_DATA_S3_PATH_DEFAULT);
+		try {
+			tNS3FS.initialize(new URI(tS3PathTargetRoot), tConfiguration);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+		FileSystem tFileSystem = tNS3FS;
 
 		List<FileStatus> tUnfilteredLoadTargetFileStatusList = getUnfilteredLoadTargetFileStatusList(aLocation, tConfiguration, tFileSystem);
 		LoadFileFilter tLoadFileFileter = createLoadFileFilter();
