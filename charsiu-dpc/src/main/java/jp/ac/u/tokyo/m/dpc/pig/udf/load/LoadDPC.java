@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import jp.ac.u.tokyo.m.data.type.TypeStringCasterPigToPigTypeByte;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCColumnSchema;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCRowDataMapping;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCSchemaCacheLoader;
-import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.TypeStringCasterPigToPigTypeByte;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.DefinitionResourceLoadUtil;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.FileStatusWithVersion;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.LoadFileFilter;
@@ -73,7 +73,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 import org.apache.pig.impl.util.UDFContext;
 
 /**
- * Reads and absorbs the differentce between the file format and the schema by year of DPC data.<br>
+ * Reads and absorbs the difference between the file format and the schema by year of DPC data.<br>
  * <br>
  * HDFS上に特定構造で格納されている DPCデータ を、スキーマ情報付きで読み込みます。<br>
  */
