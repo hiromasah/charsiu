@@ -38,7 +38,7 @@ public class ReflectionUDFParameters {
 		mInputSchema = generateInputSchema(mColumnNames);
 	}
 
-	// TODO 実装
+	// TODO $x access to column
 	static List<ColumnName> parseReflectionUDFParameters(String aReflectionUDFParametersString, FieldSchema aColumnValueFieldSchema) throws FrontendException {
 		List<ColumnName> tColumnNames = new ArrayList<ReflectionUDFParameters.ColumnName>();
 
@@ -53,9 +53,33 @@ public class ReflectionUDFParameters {
 			for (int tIndex = 1; tIndex < tAddressesLength; tIndex++) {
 				String tAddressAlias = tAddresses[tIndex];
 				FieldSchema tField = tCurrentField.schema.getField(tAddressAlias);
-				if (tField == null)
-					throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField);
-				else {
+				if (tField == null) {
+					// Bag{Tuple( ... )} ではなく Bag{ ... } で指定された可能性が有るので1階層無視して tAddressAlias を探す
+					if (tCurrentField.type == DataType.BAG) {
+						FieldSchema tBagTupleFieldSchema = tCurrentField.schema.getField(0);
+						try {
+							tField = tBagTupleFieldSchema.schema.getField(tAddressAlias);
+						} catch (Throwable e) {
+							throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField, e);
+						}
+						if (tField != null) {
+							// BagTuple Scheam
+							String tChildColumnAlias = tBagTupleFieldSchema.alias == null ? "" : tBagTupleFieldSchema.alias;
+							ColumnName tChildColumnName = new ColumnName(tChildColumnAlias, 0, tBagTupleFieldSchema, AccessType.SUB_BAG);
+							tCurrentColumnName.setChild(tChildColumnName);
+							tCurrentColumnName = tChildColumnName;
+							// Column Schema
+							ColumnName tChildChildColumnName = new ColumnName(tAddressAlias, tBagTupleFieldSchema.schema.getPosition(tAddressAlias), tField, AccessType.SUB_BAG);
+							tChildColumnName.setChild(tChildChildColumnName);
+							tChildColumnName = tChildChildColumnName;
+
+							tCurrentField = tField;
+							continue;
+						} else
+							throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField);
+					} else
+						throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField);
+				} else {
 					AccessType tAccessType = null;
 					if (tCurrentColumnName.getFieldSchema().type == DataType.BAG
 							|| (tCurrentColumnName.getFieldSchema().type == DataType.TUPLE && tCurrentColumnName.getAccessType() == AccessType.SUB_BAG))
@@ -71,8 +95,6 @@ public class ReflectionUDFParameters {
 			}
 		}
 
-		// mock
-		// tColumnNames.add(new ColumnName("", 0, aColumnValueFieldSchema, AccessType.FLAT));
 		return tColumnNames;
 	}
 

@@ -25,36 +25,42 @@ public class ReflectionUDFSetting {
 	private final String mClassName;
 	private final String mColumnRegex;
 	private final String mUDFArgumentFormat;
+	private final String mAliasSuffix;
 
 	private final Pattern mColumnPattern;
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	public ReflectionUDFSetting(String aClassName, String aColumnRegex, String aUDFArgumentFormat) {
+	public ReflectionUDFSetting(String aClassName, String aColumnRegex, String aUDFArgumentFormat, String aAliasSuffix) {
 		mClassName = aClassName;
 		mColumnRegex = aColumnRegex;
 		mUDFArgumentFormat = aUDFArgumentFormat;
+		mAliasSuffix = aAliasSuffix;
 
 		mColumnPattern = Pattern.compile(aColumnRegex);
 	}
 
 	@Override
 	public String toString() {
-		return "ReflectionUDFSetting [mClassName=" + mClassName + ", mColumnRegex=" + mColumnRegex + ", mUDFArgumentFormat=" + mUDFArgumentFormat + "]";
+		return "ReflectionUDFSetting [mClassName=" + mClassName + ", mColumnRegex=" + mColumnRegex + ", mUDFArgumentFormat=" + mUDFArgumentFormat + ", mAliasSuffix=" + mAliasSuffix + ", mColumnPattern=" + mColumnPattern + "]";
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	public String getmClassName() {
+	public String getClassName() {
 		return mClassName;
 	}
 
-	public String getmColumnRegex() {
+	public String getColumnRegex() {
 		return mColumnRegex;
 	}
 
-	public String getmUDFArgumentFormat() {
+	public String getUDFArgumentFormat() {
 		return mUDFArgumentFormat;
+	}
+
+	public String getAliasSuffix() {
+		return mAliasSuffix;
 	}
 
 	public Pattern getColumnPattern() {

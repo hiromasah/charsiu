@@ -45,6 +45,8 @@ public class AliasConstants {
 
 	public static final String TUPLE_MIN_OUT_ALIAS_TOP;
 
+	public static final String MULTICAST_EVALUATE_ALIAS_TOP;
+
 	// -----------------------------------------------------------------------------------------------------------------
 
 	static {
@@ -71,6 +73,8 @@ public class AliasConstants {
 		TUPLE_MAX_OUT_ALIAS_TOP = tProperties.getProperty("TupleMax.OutAlias.Top", "max_tuples");
 
 		TUPLE_MIN_OUT_ALIAS_TOP = tProperties.getProperty("TupleMin.OutAlias.Top", "min_tuples");
+
+		MULTICAST_EVALUATE_ALIAS_TOP = tProperties.getProperty("MulticastEvaluate.OutAlias.Top", "multicasted");
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

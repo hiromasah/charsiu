@@ -18,13 +18,16 @@ package jp.ac.u.tokyo.m.pig.udf.eval.util;
 
 import java.util.List;
 
+import org.apache.pig.EvalFunc;
+import org.apache.pig.FuncSpec;
 import org.apache.pig.data.DataType;
+import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
 public class ReflectionUtil {
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "hiding" })
 	public static <EvalFunc> Class<EvalFunc> getClassForName(String className) {
 		try {
 			return (Class<EvalFunc>) Class.forName(className);
@@ -69,6 +72,59 @@ public class ReflectionUtil {
 				break;
 			}
 		}
+	}
+
+	public static EvalFunc<?> getUDFInstance(String aUDFClassName, Schema aInputSchema) throws InstantiationException, IllegalAccessException, CloneNotSupportedException, FrontendException {
+		Class<EvalFunc<?>> tMasterUDFClass = getClassForName(aUDFClassName);
+		EvalFunc<?> tMasterUDF = tMasterUDFClass.newInstance();
+		EvalFunc<?> tUDF = null;
+		Schema tInputSchema = aInputSchema.clone();
+		removeAlias(tInputSchema);
+		List<FuncSpec> tArgToFuncMapping = tMasterUDF.getArgToFuncMapping();
+		if (tArgToFuncMapping == null) {
+			tUDF = tMasterUDF;
+		} else {
+			for (FuncSpec tFuncSpec : tArgToFuncMapping) {
+				if (tFuncSpec.getInputArgsSchema().equals(tInputSchema)) {
+					Class<EvalFunc<?>> tUDFClass = getClassForName(tFuncSpec.getClassName());
+					tUDF = tUDFClass.newInstance();
+					break;
+				}
+			}
+			// 1周で合致しないまら {()} が問題の可能性が有るので、スキーマを調整してもう一度
+			if (tUDF == null) {
+				removeTupleInBag(tInputSchema);
+				for (FuncSpec tFuncSpec : tArgToFuncMapping) {
+					if (tFuncSpec.getInputArgsSchema().equals(tInputSchema)) {
+						Class<EvalFunc<?>> tUDFClass = getClassForName(tFuncSpec.getClassName());
+						tUDF = tUDFClass.newInstance();
+						break;
+					}
+				}
+			}
+			// XXX 単一の引数をとる UDF しか想定していない実装。 TupleMax などに対応するなら複数引数を考慮する実装にする必要あり。
+			// tFuncSpec.getInputArgsSchema() == {()} の場合
+			if (tUDF == null) {
+				for (FuncSpec tFuncSpec : tArgToFuncMapping) {
+					if (tFuncSpec.getInputArgsSchema().getField(0).type == DataType.BAG) {
+						if (tFuncSpec.getInputArgsSchema().getField(0).schema == null
+								|| (tFuncSpec.getInputArgsSchema().getField(0).schema.getField(0).type == DataType.TUPLE
+								&& tFuncSpec.getInputArgsSchema().getField(0).schema.getField(0).schema.size() == 0)) {
+							// empty Bag schema : {()}
+							if (Schema.equals(tFuncSpec.getInputArgsSchema(), tInputSchema, true, true)) {
+								Class<EvalFunc<?>> tUDFClass = getClassForName(tFuncSpec.getClassName());
+								tUDF = tUDFClass.newInstance();
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			if (tUDF == null)
+				throw new IllegalArgumentException(aUDFClassName + " undefined input schema of " + aInputSchema);
+		}
+		return tUDF;
 	}
 
 }

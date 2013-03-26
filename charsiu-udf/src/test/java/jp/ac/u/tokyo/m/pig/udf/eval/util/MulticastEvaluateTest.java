@@ -16,6 +16,7 @@
 
 package jp.ac.u.tokyo.m.pig.udf.eval.util;
 
+import jp.ac.u.tokyo.m.pig.udf.AliasConstants;
 import jp.ac.u.tokyo.m.test.TestUtil;
 
 import org.apache.pig.data.DataType;
@@ -30,22 +31,149 @@ public class MulticastEvaluateTest {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	private static MulticastEvaluate mMulticastEvaluate;
-
-	private static Schema INPUT_SCHEMA;
-
-	private static Tuple INPUT_DATA;
-
-	private static Tuple OUTPUT_DATA;
+	private static MulticastEvaluate mMulticastEvaluateSimple;
+	private static Schema mInputSchemaSimple;
+	private static Schema mOutputSchemaSimple;
+	private static Tuple mInputDataSimple;
+	private static Tuple mOutputDataSimple;
 
 	// -----------------------------------------------------------------------------------------------------------------
+
+	@BeforeClass
+	public static void initSimple() throws FrontendException {
+		mMulticastEvaluateSimple = new MulticastEvaluate(
+				"MAX", "score_.*", "_", "MAX_result",
+				"MIN", "score_.*", "_", "MIN_result");
+		// {name_1st: chararray, score_1st: {score_tuple: (score: int)},name_2nd: chararray,score_2nd: {score_tuple: (score: int)}}
+		mInputSchemaSimple = TestUtil.createSchema(
+				new FieldSchema("name_1st", DataType.CHARARRAY),
+				new FieldSchema("score_1st",
+						TestUtil.createSchema(
+								new FieldSchema("score_tuple",
+										TestUtil.createSchema(
+												new FieldSchema("score", DataType.INTEGER)
+												),
+										DataType.TUPLE)),
+						DataType.BAG),
+				new FieldSchema("name_2nd", DataType.CHARARRAY),
+				new FieldSchema("score_2nd",
+						TestUtil.createSchema(
+								new FieldSchema("score_tuple",
+										TestUtil.createSchema(
+												new FieldSchema("score", DataType.INTEGER)
+												),
+										DataType.TUPLE)),
+						DataType.BAG)
+				);
+		mOutputSchemaSimple = TestUtil.createSchema(
+				new FieldSchema(AliasConstants.MULTICAST_EVALUATE_ALIAS_TOP,
+						TestUtil.createSchema(
+								new FieldSchema("name_1st", DataType.CHARARRAY),
+								new FieldSchema("score_1st_MAX_result", DataType.INTEGER),
+								new FieldSchema("score_1st_MIN_result", DataType.INTEGER),
+								new FieldSchema("name_2nd", DataType.CHARARRAY),
+								new FieldSchema("score_2nd_MAX_result", DataType.INTEGER),
+								new FieldSchema("score_2nd_MIN_result", DataType.INTEGER)
+								),
+						DataType.TUPLE));
+		// dog {(4),(1),(7)} cat {(2),(5),(8)}
+		mInputDataSimple = TestUtil.createTuple(
+				"dog",
+				TestUtil.createBag(1, 4, 1, 7),
+				"cat",
+				TestUtil.createBag(1, 2, 5, 8));
+		// dog 7 1 cat 8 2
+		mOutputDataSimple = TestUtil.createTuple(
+				"dog",
+				7, 1,
+				"cat",
+				8, 2);
+	}
+
+	@Test
+	public void testSchemaSimple() throws Throwable {
+		TestUtil.assertEqualsPigObjects(
+				mOutputSchemaSimple,
+				mMulticastEvaluateSimple.outputSchema(mInputSchemaSimple));
+	}
+
+	@Test
+	public void testExecSimple() throws Throwable {
+		mMulticastEvaluateSimple.outputSchema(mInputSchemaSimple);
+		TestUtil.assertEqualsPigObjects(mOutputDataSimple, mMulticastEvaluateSimple.exec(mInputDataSimple));
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	private static MulticastEvaluate mMulticastEvaluateAll;
+	private static Schema mOutputSchemaAll;
+	private static Tuple mOutputDataAll;
+
+	@BeforeClass
+	public static void initAll() throws FrontendException {
+		mMulticastEvaluateAll = new MulticastEvaluate(
+				"MIN", "score_.*", "_", "MIN_result",
+				"MAX", "score_.*", "_", "MAX_result",
+				"SUM", "score_.*", "_", "SUM_result",
+				"AVG", "score_.*", "_", "AVG_result",
+				"SIZE", "score_.*", "_", "SIZE_result",
+				"COUNT", "score_.*", "_", "COUNT_result");
+		mOutputSchemaAll = TestUtil.createSchema(
+				new FieldSchema(AliasConstants.MULTICAST_EVALUATE_ALIAS_TOP,
+						TestUtil.createSchema(
+								new FieldSchema("name_1st", DataType.CHARARRAY),
+								new FieldSchema("score_1st_MIN_result", DataType.INTEGER),
+								new FieldSchema("score_1st_MAX_result", DataType.INTEGER),
+								new FieldSchema("score_1st_SUM_result", DataType.LONG),
+								new FieldSchema("score_1st_AVG_result", DataType.DOUBLE),
+								new FieldSchema("score_1st_SIZE_result", DataType.LONG),
+								new FieldSchema("score_1st_COUNT_result", DataType.LONG),
+								new FieldSchema("name_2nd", DataType.CHARARRAY),
+								new FieldSchema("score_2nd_MIN_result", DataType.INTEGER),
+								new FieldSchema("score_2nd_MAX_result", DataType.INTEGER),
+								new FieldSchema("score_2nd_SUM_result", DataType.LONG),
+								new FieldSchema("score_2nd_AVG_result", DataType.DOUBLE),
+								new FieldSchema("score_2nd_SIZE_result", DataType.LONG),
+								new FieldSchema("score_2nd_COUNT_result", DataType.LONG)
+								),
+						DataType.TUPLE));
+		// dog {(3),(1),(7)} cat {(2),(5),(8)}
+		// dog 7 1 cat 8 2
+		mOutputDataAll = TestUtil.createTuple(
+				"dog",
+				1, 7, 12, 4.0, 3, 3,
+				"cat",
+				2, 8, 15, 5.0, 3, 3);
+	}
+
+	@Test
+	public void testSchemaAll() throws Throwable {
+		TestUtil.assertEqualsPigObjects(
+				mOutputSchemaAll,
+				mMulticastEvaluateAll.outputSchema(mInputSchemaSimple));
+	}
+
+	@Test
+	public void testExecAll() throws Throwable {
+		mMulticastEvaluateAll.outputSchema(mInputSchemaSimple);
+		TestUtil.assertEqualsPigObjects(mOutputDataAll, mMulticastEvaluateAll.exec(mInputDataSimple));
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	private static MulticastEvaluate mMulticastEvaluateSensitive;
+	private static Schema INPUT_SCHEMA;
+	private static Tuple INPUT_DATA;
+	private static Tuple OUTPUT_DATA;
 
 	// {name_1st: chararray, score_1st: {score_tuple: (score: int)},name_2nd: chararray,score_2nd: {score_tuple: (score: int)}}
 	// {name_1st: chararray, score_1st: {score_tuple: (score: int)},name_2st: chararray,score_2st: {score_tuple: (score: int)}}
 	// [name_1st: chararray, score_1st: bag({score_tuple: (score: int)}), name_2st: chararray, score_2st: bag({score_tuple: (score: int)})]
 	@BeforeClass
-	public static void init() throws FrontendException {
-		mMulticastEvaluate = new MulticastEvaluate("MAX", "score_.*", "_", "MIN", "score_.*", "_");
+	public static void initSensitive() throws FrontendException {
+		mMulticastEvaluateSensitive = new MulticastEvaluate(
+				"MAX", "score_.*", "_.score_tuple.score", "MAX_result",
+				"MIN", "score_.*", "_.score_tuple.score", "MIN_result");
 
 		INPUT_SCHEMA = TestUtil.createSchema(
 				new FieldSchema("name_1st", DataType.CHARARRAY),
@@ -84,82 +212,16 @@ public class MulticastEvaluateTest {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
+	// TODO $x アクセスに対応するテスト
+	// {} {()} の構造差を無視して同じAccesserを構成するテスト
+	// {} {()} の構造差を無視して同じスキーマを構成するテスト
+	// TODO 上記のような特殊構造と一般的な構造が混ざっていたときにきちんと評価するメソッドのテスト
+	// TODO conf serialize のてすと
+
 	@Test
 	public void testExec() throws Throwable {
-		mMulticastEvaluate.outputSchema(INPUT_SCHEMA);
-		TestUtil.assertEqualsPigObjects(OUTPUT_DATA, mMulticastEvaluate.exec(INPUT_DATA));
-	}
-
-	@Test
-	public void testParseReflectionUDFParameters() throws Throwable {
-		FieldSchema tInputFieldSchema = new FieldSchema("score_1st",
-				TestUtil.createSchema(
-						new FieldSchema("score_tuple",
-								TestUtil.createSchema(
-										new FieldSchema("score", DataType.INTEGER),
-										new FieldSchema("rate", DataType.INTEGER)
-										),
-								DataType.TUPLE)),
-				DataType.BAG);
-
-		System.out.println(ReflectionUDFParameters.parseReflectionUDFParameters("_.score_tuple.score", tInputFieldSchema));
-
-	}
-
-	@Test
-	public void testParseReflectionUDFParameters2() throws Throwable {
-		FieldSchema tInputFieldSchema = new FieldSchema("score_1st",
-				TestUtil.createSchema(
-						new FieldSchema("score", DataType.INTEGER),
-						new FieldSchema("rate", DataType.INTEGER)
-						),
-				DataType.BAG);
-
-		System.out.println(ReflectionUDFParameters.parseReflectionUDFParameters("_.score", tInputFieldSchema));
-	}
-
-	@Test
-	public void testParseReflectionUDFParameters3() throws Throwable {
-		// dog {(3,1),(7,0)} cat {(2,1),(8,4)}
-		Tuple tInputData = TestUtil.createTuple(
-				"dog",
-				TestUtil.createBag(2, 3, 1, 7, 0),
-				"cat",
-				TestUtil.createBag(2, 2, 1, 8, 4));
-
-		Tuple tOutputData = TestUtil.createTuple(
-				"dog",
-				7, 3,
-				"cat",
-				8, 2, 5);
-
-		Schema tInputSchema = TestUtil.createSchema(
-				new FieldSchema("name_1st", DataType.CHARARRAY),
-				new FieldSchema("score_1st",
-						TestUtil.createSchema(
-								new FieldSchema("score_tuple",
-										TestUtil.createSchema(
-												new FieldSchema("score", DataType.INTEGER),
-												new FieldSchema("rate", DataType.INTEGER)
-												),
-										DataType.TUPLE)),
-						DataType.BAG),
-				new FieldSchema("name_2nd", DataType.CHARARRAY),
-				new FieldSchema("score_2nd",
-						TestUtil.createSchema(
-								new FieldSchema("score_tuple",
-										TestUtil.createSchema(
-												new FieldSchema("score", DataType.INTEGER),
-												new FieldSchema("rate", DataType.INTEGER)
-												),
-										DataType.TUPLE)),
-						DataType.BAG)
-				);
-
-		MulticastEvaluate tMulticastEvaluate = new MulticastEvaluate("MAX", "score_.*", "_.score_tuple.score", "MIN", "score_.*", "_.score_tuple.score", "SUM", "score_2nd", "_.score_tuple.rate");
-//		MulticastEvaluate tMulticastEvaluate = new MulticastEvaluate("TupleMax", "score_2nd", "_, _.score_tuple.rate");
-		tMulticastEvaluate.outputSchema(tInputSchema);
-		TestUtil.assertEqualsPigObjects(tOutputData, tMulticastEvaluate.exec(tInputData));
+		mMulticastEvaluateSensitive.outputSchema(INPUT_SCHEMA);
+		TestUtil.assertEqualsPigObjects(OUTPUT_DATA, mMulticastEvaluateSensitive.exec(INPUT_DATA));
 	}
 
 	// @Test
@@ -202,15 +264,6 @@ public class MulticastEvaluateTest {
 	// public void testExecExceptionDigit7() throws Throwable {
 	// mAddDaySpan.exec(TestUtil.createTuple("GyyMMdd", 0));
 	// }
-
-	// -----------------------------------------------------------------------------------------------------------------
-
-	@Test
-	public void testSchema() throws Throwable {
-		// TestUtil.assertEqualsPigObjects(
-		// TestUtil.createSchema(new FieldSchema("", DataType.CHARARRAY)),
-		// mMulticastEvaluate.outputSchema(INPUT_SCHEMA));
-	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 

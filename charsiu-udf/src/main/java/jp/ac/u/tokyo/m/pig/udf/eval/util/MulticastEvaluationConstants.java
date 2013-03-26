@@ -31,9 +31,9 @@ public class MulticastEvaluationConstants {
 		UDF_REFLECT_MAPPING.put("COUNT", "org.apache.pig.builtin.COUNT");
 
 		// charsiu functions
-		UDF_REFLECT_MAPPING.put("TupleFirst", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleFirst");
-		UDF_REFLECT_MAPPING.put("TupleMax", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMax");
-		UDF_REFLECT_MAPPING.put("TupleMin", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMin");
+//		UDF_REFLECT_MAPPING.put("TupleFirst", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleFirst");
+//		UDF_REFLECT_MAPPING.put("TupleMax", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMax");
+//		UDF_REFLECT_MAPPING.put("TupleMin", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMin");
 	}
 
 	public final static String REFLECTION_UDF_PARAMETERS_ROOT_COLUMN = "_";
