@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import jp.ac.u.tokyo.m.pig.udf.AliasConstants;
 
@@ -31,6 +32,7 @@ import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
+import org.apache.pig.impl.util.UDFContext;
 
 /**
  * (english)<br>
@@ -51,13 +53,17 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 	 */
 	private static List<ColumnEvaluationSetting> mColumnEvaluationSettings;
 
+	private final String mPropertyKeyColumnEvaluationSettings;
+
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * @param aArgs
 	 *            aArgs are ('\<UDF\>', '\<bag column regex\>', '\<column control\>', '\<alias suffix\>'[, ... ])
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
 	 */
-	public MulticastEvaluate(String... aArgs) {
+	public MulticastEvaluate(String... aArgs) throws InstantiationException, IllegalAccessException {
 		super();
 		int tArgLength = aArgs.length;
 		if (tArgLength % 4 != 0)
@@ -72,6 +78,34 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 						"MulticastEvaluate supported : MIN, MAX, SUM, AVG, SIZE, COUNT");
 			tReflectUDFSettings.add(new ReflectionUDFSetting(tClassName, aArgs[++i], aArgs[++i], aArgs[++i]));
 		}
+		String tKey = mPropertyKeyColumnEvaluationSettings = generatePropertyKey(aArgs);
+
+		// transfer ColumnEvaluationSettings information
+		Properties tProperties = UDFContext.getUDFContext().getUDFProperties(this.getClass());
+		String tColumnEvaluationSettingsString = tProperties.getProperty(tKey);
+		if (tColumnEvaluationSettingsString != null)
+			mColumnEvaluationSettings = StringableUtil.parseColumnEvaluationSettingsString(tColumnEvaluationSettingsString);
+	}
+
+	static String generatePropertyKey(String... aArgs) {
+		StringBuilder tKeyBuilder = new StringBuilder();
+		tKeyBuilder.append(MulticastEvaluate.class.getName());
+		// be tArgLength % 4 == 0
+		int tArgLength = aArgs.length;
+		for (int i = 0; i < tArgLength; i++) {
+			StringBuilder tCurrentArgStringBuilder = new StringBuilder();
+			tCurrentArgStringBuilder.append(aArgs[i]);
+			tCurrentArgStringBuilder.append("//");
+			tCurrentArgStringBuilder.append(aArgs[++i]);
+			tCurrentArgStringBuilder.append("//");
+			tCurrentArgStringBuilder.append(aArgs[++i]);
+			tCurrentArgStringBuilder.append("//");
+			tCurrentArgStringBuilder.append(aArgs[++i]);
+
+			tKeyBuilder.append(".");
+			tKeyBuilder.append(tCurrentArgStringBuilder.toString().hashCode());
+		}
+		return tKeyBuilder.toString();
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -168,7 +202,11 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 			}
 			tColumnEvaluationSettings.add(tSetting);
 		}
-		mColumnEvaluationSettings = tColumnEvaluationSettings;
+		// set property
+		Properties tProperties = UDFContext.getUDFContext().getUDFProperties(this.getClass());
+		tProperties.setProperty(
+				mPropertyKeyColumnEvaluationSettings,
+				StringableUtil.toStringColumnEvaluationSettings(tColumnEvaluationSettings));
 
 		Schema tOutputSchema = new Schema();
 		try {

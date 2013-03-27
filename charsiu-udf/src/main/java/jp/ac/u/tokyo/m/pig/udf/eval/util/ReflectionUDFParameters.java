@@ -83,8 +83,8 @@ public class ReflectionUDFParameters {
 						throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField);
 				} else {
 					AccessType tAccessType = null;
-					if (tCurrentColumnName.getFieldSchema().type == DataType.BAG
-							|| (tCurrentColumnName.getFieldSchema().type == DataType.TUPLE && tCurrentColumnName.getAccessType() == AccessType.SUB_BAG))
+					if (tCurrentColumnName.getFieldType() == DataType.BAG
+							|| (tCurrentColumnName.getFieldType() == DataType.TUPLE && tCurrentColumnName.getAccessType() == AccessType.SUB_BAG))
 						tAccessType = AccessType.SUB_BAG;
 					else
 						tAccessType = AccessType.FLAT;
@@ -109,7 +109,7 @@ public class ReflectionUDFParameters {
 			if (tColumnName.getAccessType() == AccessType.FLAT)
 				tSchema.add(tColumnName.getFieldSchema());
 			else {
-				tSchema.add(new FieldSchema(null, new Schema(new FieldSchema(null, tColumnName.getFieldSchema().type)), DataType.BAG));
+				tSchema.add(new FieldSchema(null, new Schema(new FieldSchema(null, tColumnName.getFieldType())), DataType.BAG));
 			}
 		}
 		return tSchema;

@@ -71,7 +71,7 @@ public class StringableColumnAccessor implements ColumnAccessor {
 				break;
 			} else {
 				// TODO 実装（プロトタイプ版では１層目が Bag の物しか扱わない、ということにする）
-				switch (tCurrentColumnName.getFieldSchema().type) {
+				switch (tCurrentColumnName.getFieldType()) {
 				case DataType.BAG:
 					// tDataSource = DataType.toBag(aColumnValue);
 					break;
@@ -86,7 +86,7 @@ public class StringableColumnAccessor implements ColumnAccessor {
 
 		// 次層が Tuple なら無視してその次の index
 		ColumnIndexInformation tNextColumnName = tCurrentColumnName.getChild();
-		int tChildIndex = tNextColumnName.getFieldSchema().type == DataType.TUPLE ? tNextColumnName.getChild().getIndex() : tNextColumnName.getIndex();
+		int tChildIndex = tNextColumnName.getFieldType() == DataType.TUPLE ? tNextColumnName.getChild().getIndex() : tNextColumnName.getIndex();
 		Iterator<Tuple> tDataSourceBagIterator = tDataSourceBag.iterator();
 		ArrayList<Tuple> tProtoBag = new ArrayList<Tuple>();
 

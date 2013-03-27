@@ -40,7 +40,7 @@ public class MulticastEvaluateTest {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	@BeforeClass
-	public static void initSimple() throws FrontendException {
+	public static void initSimple() throws FrontendException, InstantiationException, IllegalAccessException {
 		mMulticastEvaluateSimple = new MulticastEvaluate(
 				"MAX", "score_.*", "_", "MAX_result",
 				"MIN", "score_.*", "_", "MIN_result");
@@ -100,6 +100,9 @@ public class MulticastEvaluateTest {
 	@Test
 	public void testExecSimple() throws Throwable {
 		mMulticastEvaluateSimple.outputSchema(mInputSchemaSimple);
+		mMulticastEvaluateSimple = new MulticastEvaluate(
+				"MAX", "score_.*", "_", "MAX_result",
+				"MIN", "score_.*", "_", "MIN_result");
 		TestUtil.assertEqualsPigObjects(mOutputDataSimple, mMulticastEvaluateSimple.exec(mInputDataSimple));
 	}
 
@@ -110,7 +113,7 @@ public class MulticastEvaluateTest {
 	private static Tuple mOutputDataAll;
 
 	@BeforeClass
-	public static void initAll() throws FrontendException {
+	public static void initAll() throws FrontendException, InstantiationException, IllegalAccessException {
 		mMulticastEvaluateAll = new MulticastEvaluate(
 				"MIN", "score_.*", "_", "MIN_result",
 				"MAX", "score_.*", "_", "MAX_result",
@@ -156,6 +159,13 @@ public class MulticastEvaluateTest {
 	@Test
 	public void testExecAll() throws Throwable {
 		mMulticastEvaluateAll.outputSchema(mInputSchemaSimple);
+		mMulticastEvaluateAll = new MulticastEvaluate(
+				"MIN", "score_.*", "_", "MIN_result",
+				"MAX", "score_.*", "_", "MAX_result",
+				"SUM", "score_.*", "_", "SUM_result",
+				"AVG", "score_.*", "_", "AVG_result",
+				"SIZE", "score_.*", "_", "SIZE_result",
+				"COUNT", "score_.*", "_", "COUNT_result");
 		TestUtil.assertEqualsPigObjects(mOutputDataAll, mMulticastEvaluateAll.exec(mInputDataSimple));
 	}
 
@@ -170,7 +180,7 @@ public class MulticastEvaluateTest {
 	// {name_1st: chararray, score_1st: {score_tuple: (score: int)},name_2st: chararray,score_2st: {score_tuple: (score: int)}}
 	// [name_1st: chararray, score_1st: bag({score_tuple: (score: int)}), name_2st: chararray, score_2st: bag({score_tuple: (score: int)})]
 	@BeforeClass
-	public static void initSensitive() throws FrontendException {
+	public static void initSensitive() throws FrontendException, InstantiationException, IllegalAccessException {
 		mMulticastEvaluateSensitive = new MulticastEvaluate(
 				"MAX", "score_.*", "_.score_tuple.score", "MAX_result",
 				"MIN", "score_.*", "_.score_tuple.score", "MIN_result");
@@ -221,6 +231,9 @@ public class MulticastEvaluateTest {
 	@Test
 	public void testExec() throws Throwable {
 		mMulticastEvaluateSensitive.outputSchema(INPUT_SCHEMA);
+		mMulticastEvaluateSensitive = new MulticastEvaluate(
+				"MAX", "score_.*", "_.score_tuple.score", "MAX_result",
+				"MIN", "score_.*", "_.score_tuple.score", "MIN_result");
 		TestUtil.assertEqualsPigObjects(OUTPUT_DATA, mMulticastEvaluateSensitive.exec(INPUT_DATA));
 	}
 
