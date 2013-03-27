@@ -26,7 +26,17 @@ public class ColumnEvaluationSetting {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	private final List<ColumnEvaluator> mColumnEvaluators = new ArrayList<ColumnEvaluator>();
+	private final List<ColumnEvaluator> mColumnEvaluators;
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	public ColumnEvaluationSetting() {
+		mColumnEvaluators = new ArrayList<ColumnEvaluator>();
+	}
+
+	public ColumnEvaluationSetting(List<ColumnEvaluator> aColumnEvaluators) {
+		mColumnEvaluators = aColumnEvaluators;
+	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
@@ -34,10 +44,15 @@ public class ColumnEvaluationSetting {
 		return mColumnEvaluators;
 	}
 
-	// -----------------------------------------------------------------------------------------------------------------
-
 	public void addColumnEvaluator(ColumnEvaluator aTarget) {
 		mColumnEvaluators.add(aTarget);
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Override
+	public String toString() {
+		return StringableUtil.toStringColumnEvaluators(mColumnEvaluators);
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

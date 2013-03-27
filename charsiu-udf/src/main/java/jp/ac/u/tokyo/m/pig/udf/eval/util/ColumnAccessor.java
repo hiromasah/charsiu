@@ -16,10 +16,13 @@
 
 package jp.ac.u.tokyo.m.pig.udf.eval.util;
 
+import java.util.List;
+
 import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 
 public interface ColumnAccessor {
 	Tuple generate(Object aColumnValue);
 	Schema getInputSchema();
+	List<ColumnIndexInformation> getColumnIndexInformations();
 }

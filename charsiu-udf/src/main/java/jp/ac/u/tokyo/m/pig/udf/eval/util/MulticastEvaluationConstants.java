@@ -20,7 +20,11 @@ import java.util.HashMap;
 
 public class MulticastEvaluationConstants {
 
-	final static HashMap<String, String> UDF_REFLECT_MAPPING = new HashMap<String, String>();
+	public static enum AccessType {
+		FLAT,
+		SUB_BAG
+	}
+	static final HashMap<String, String> UDF_REFLECT_MAPPING = new HashMap<String, String>();
 	static {
 		// Pig built in Functions
 		UDF_REFLECT_MAPPING.put("MIN", "org.apache.pig.builtin.MIN");
@@ -36,8 +40,16 @@ public class MulticastEvaluationConstants {
 //		UDF_REFLECT_MAPPING.put("TupleMin", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMin");
 	}
 
-	public final static String REFLECTION_UDF_PARAMETERS_ROOT_COLUMN = "_";
-	public final static String REFLECTION_UDF_PARAMETERS_ACCESSOR = "\\.";
-	public final static String REFLECTION_UDF_PARAMETERS_SEPARATOR = ",";
+	public static final String REFLECTION_UDF_PARAMETERS_ROOT_COLUMN = "_";
+	public static final String REFLECTION_UDF_PARAMETERS_ACCESSOR = "\\.";
+	public static final String REFLECTION_UDF_PARAMETERS_SEPARATOR = ",";
+	
+	public static final String STRINGABLE_COLUMN_INDEX_INFORMATION_HEAD_MARKER_REGEX = "\\*";
+	public static final String STRINGABLE_COLUMN_INDEX_INFORMATION_HEAD_MARKER = "*";
+	public static final String STRINGABLE_COLUMN_INDEX_INFORMATION_DELIMITER = ",";
+	public static final String STRINGABLE_COLUMN_ACCESSOR_DELIMITER = "#";
+	public static final String STRINGABLE_COLUMN_EVALUATOR_DELIMITER = "@";
+	public static final String STRINGABLE_LIST_COLUMN_EVALUATOR_DELIMITER = "&";
+	public static final String STRINGABLE_LIST_COLUMN_EVALUATION_SETTING_DELIMITER = "%";
 
 }

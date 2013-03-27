@@ -19,6 +19,8 @@ package jp.ac.u.tokyo.m.pig.udf.eval.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.ac.u.tokyo.m.pig.udf.eval.util.MulticastEvaluationConstants.AccessType;
+
 import org.apache.pig.data.DataType;
 import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
@@ -28,7 +30,7 @@ public class ReflectionUDFParameters {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	private final List<ColumnName> mColumnNames;
+	private final List<ColumnIndexInformation> mColumnNames;
 	private final Schema mInputSchema;
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -39,13 +41,13 @@ public class ReflectionUDFParameters {
 	}
 
 	// TODO $x access to column
-	static List<ColumnName> parseReflectionUDFParameters(String aReflectionUDFParametersString, FieldSchema aColumnValueFieldSchema) throws FrontendException {
-		List<ColumnName> tColumnNames = new ArrayList<ReflectionUDFParameters.ColumnName>();
+	static List<ColumnIndexInformation> parseReflectionUDFParameters(String aReflectionUDFParametersString, FieldSchema aColumnValueFieldSchema) throws FrontendException {
+		List<ColumnIndexInformation> tColumnNames = new ArrayList<ColumnIndexInformation>();
 
 		String[] tParameters = aReflectionUDFParametersString.split(MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_SEPARATOR);
 		for (String tParameterString : tParameters) {
 			// 最上位要素を追加
-			ColumnName tCurrentColumnName = new ColumnName("", 0, aColumnValueFieldSchema, AccessType.FLAT);
+			DefaultColumnIndexInformation tCurrentColumnName = new DefaultColumnIndexInformation(0, aColumnValueFieldSchema, AccessType.FLAT);
 			tColumnNames.add(tCurrentColumnName);
 			FieldSchema tCurrentField = aColumnValueFieldSchema;
 			String[] tAddresses = tParameterString.split(MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_ACCESSOR);
@@ -64,12 +66,12 @@ public class ReflectionUDFParameters {
 						}
 						if (tField != null) {
 							// BagTuple Scheam
-							String tChildColumnAlias = tBagTupleFieldSchema.alias == null ? "" : tBagTupleFieldSchema.alias;
-							ColumnName tChildColumnName = new ColumnName(tChildColumnAlias, 0, tBagTupleFieldSchema, AccessType.SUB_BAG);
+							// String tChildColumnAlias = tBagTupleFieldSchema.alias == null ? "" : tBagTupleFieldSchema.alias;
+							DefaultColumnIndexInformation tChildColumnName = new DefaultColumnIndexInformation(0, tBagTupleFieldSchema, AccessType.SUB_BAG);
 							tCurrentColumnName.setChild(tChildColumnName);
 							tCurrentColumnName = tChildColumnName;
 							// Column Schema
-							ColumnName tChildChildColumnName = new ColumnName(tAddressAlias, tBagTupleFieldSchema.schema.getPosition(tAddressAlias), tField, AccessType.SUB_BAG);
+							DefaultColumnIndexInformation tChildChildColumnName = new DefaultColumnIndexInformation(tBagTupleFieldSchema.schema.getPosition(tAddressAlias), tField, AccessType.SUB_BAG);
 							tChildColumnName.setChild(tChildChildColumnName);
 							tChildColumnName = tChildChildColumnName;
 
@@ -86,7 +88,7 @@ public class ReflectionUDFParameters {
 						tAccessType = AccessType.SUB_BAG;
 					else
 						tAccessType = AccessType.FLAT;
-					ColumnName tChildColumnName = new ColumnName(tAddressAlias, tCurrentField.schema.getPosition(tAddressAlias), tField, tAccessType);
+					DefaultColumnIndexInformation tChildColumnName = new DefaultColumnIndexInformation(tCurrentField.schema.getPosition(tAddressAlias), tField, tAccessType);
 					tCurrentColumnName.setChild(tChildColumnName);
 					tCurrentColumnName = tChildColumnName;
 					tCurrentField = tField;
@@ -98,9 +100,9 @@ public class ReflectionUDFParameters {
 		return tColumnNames;
 	}
 
-	static Schema generateInputSchema(List<ColumnName> aColumnNames) throws FrontendException {
+	static Schema generateInputSchema(List<ColumnIndexInformation> aColumnNames) throws FrontendException {
 		Schema tSchema = new Schema();
-		for (ColumnName tColumnName : aColumnNames) {
+		for (ColumnIndexInformation tColumnName : aColumnNames) {
 			while (tColumnName.hasChild()) {
 				tColumnName = tColumnName.getChild();
 			}
@@ -119,64 +121,8 @@ public class ReflectionUDFParameters {
 		return mInputSchema;
 	}
 
-	public List<ColumnName> getColumnNames() {
+	public List<ColumnIndexInformation> getColumnIndexInformations() {
 		return mColumnNames;
-	}
-
-	// -----------------------------------------------------------------------------------------------------------------
-
-	public static enum AccessType {
-		FLAT,
-		SUB_BAG
-	}
-
-	public static class ColumnName {
-		private final String mName;
-		private final int mIndex;
-		private final FieldSchema mFieldSchema;
-		// 親からのアクセス方法
-		private final AccessType mAccessType;
-		private ColumnName mChild = null;
-
-		public ColumnName(String aName, int aIndex, FieldSchema aFieldSchema, AccessType aAccessType) {
-			mName = aName;
-			mIndex = aIndex;
-			mFieldSchema = aFieldSchema;
-			mAccessType = aAccessType;
-		}
-
-		public String getName() {
-			return mName;
-		}
-
-		public int getIndex() {
-			return mIndex;
-		}
-
-		public FieldSchema getFieldSchema() {
-			return mFieldSchema;
-		}
-
-		public AccessType getAccessType() {
-			return mAccessType;
-		}
-
-		public ColumnName getChild() {
-			return mChild;
-		}
-
-		void setChild(ColumnName aChild) {
-			mChild = aChild;
-		}
-
-		public boolean hasChild() {
-			return mChild != null;
-		}
-
-		@Override
-		public String toString() {
-			return "ColumnName [mName=" + mName + ", mIndex=" + mIndex + ", mFieldSchema=" + mFieldSchema + ", mAccessType=" + mAccessType + ", mChild=" + mChild + "]";
-		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

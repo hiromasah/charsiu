@@ -28,23 +28,20 @@ import org.apache.pig.data.DataType;
 import org.apache.pig.data.DefaultBagFactory;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
-import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
-import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
-public class DefaultColumnAccessor implements ColumnAccessor {
+public class StringableColumnAccessor implements ColumnAccessor {
 
-	private ReflectionUDFParameters mReflectionUDFParameters;
+	private final List<ColumnIndexInformation> mColumnIndexInformations;
 
-	public DefaultColumnAccessor(String aReflectionUDFParametersString, FieldSchema aColumnValueFieldSchema) throws FrontendException {
-		mReflectionUDFParameters = new ReflectionUDFParameters(aReflectionUDFParametersString, aColumnValueFieldSchema);
+	public StringableColumnAccessor(List<ColumnIndexInformation> aColumnIndexInformations) {
+		mColumnIndexInformations = aColumnIndexInformations;
 	}
 
-	@Deprecated
 	@Override
 	public Tuple generate(Object aColumnValue) {
 		ArrayList<Object> tTuple = new ArrayList<Object>();
-		for (ColumnIndexInformation tColumnName : mReflectionUDFParameters.getColumnIndexInformations()) {
+		for (ColumnIndexInformation tColumnName : mColumnIndexInformations) {
 			if (tColumnName.hasChild()) {
 				// TODO 例外処理
 				// TODO 実装（ hasChild 時の多階層解析）
@@ -108,14 +105,42 @@ public class DefaultColumnAccessor implements ColumnAccessor {
 		return TupleFactory.getInstance().newTupleNoCopy(tTuple);
 	}
 
+	@Deprecated
 	@Override
 	public Schema getInputSchema() {
-		return mReflectionUDFParameters.getInputSchema();
+		return null;
 	}
 
 	@Override
 	public List<ColumnIndexInformation> getColumnIndexInformations() {
-		return mReflectionUDFParameters.getColumnIndexInformations();
+		return mColumnIndexInformations;
+	}
+
+	@Override
+	public String toString() {
+		return toString(this);
+	}
+
+	public static String toString(ColumnAccessor aTarget) {
+		String tDelimiter = MulticastEvaluationConstants.STRINGABLE_COLUMN_ACCESSOR_DELIMITER;
+		StringBuilder tResultBuilder = new StringBuilder();
+		Iterator<ColumnIndexInformation> tTargetIterator = aTarget.getColumnIndexInformations().iterator();
+		if (tTargetIterator.hasNext())
+			tResultBuilder.append(StringableColumnIndexInformation.toString(tTargetIterator.next()));
+		while (tTargetIterator.hasNext()) {
+			tResultBuilder.append(tDelimiter);
+			tResultBuilder.append(StringableColumnIndexInformation.toString(tTargetIterator.next()));
+		}
+		return tResultBuilder.toString();
+	}
+
+	public static StringableColumnAccessor parse(String aColumnColumnAccessorString) {
+		String[] tElements = aColumnColumnAccessorString.split(MulticastEvaluationConstants.STRINGABLE_COLUMN_ACCESSOR_DELIMITER);
+		ArrayList<ColumnIndexInformation> tResultMember = new ArrayList<ColumnIndexInformation>();
+		for (String tCurrentElement : tElements) {
+			tResultMember.add(StringableColumnIndexInformation.parse(tCurrentElement));
+		}
+		return new StringableColumnAccessor(tResultMember);
 	}
 
 }

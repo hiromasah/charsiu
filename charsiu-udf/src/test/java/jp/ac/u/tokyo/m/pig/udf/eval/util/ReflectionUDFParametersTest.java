@@ -18,8 +18,7 @@ package jp.ac.u.tokyo.m.pig.udf.eval.util;
 
 import java.util.ArrayList;
 
-import jp.ac.u.tokyo.m.pig.udf.eval.util.ReflectionUDFParameters.AccessType;
-import jp.ac.u.tokyo.m.pig.udf.eval.util.ReflectionUDFParameters.ColumnName;
+import jp.ac.u.tokyo.m.pig.udf.eval.util.MulticastEvaluationConstants.AccessType;
 import jp.ac.u.tokyo.m.test.TestUtil;
 
 import org.apache.pig.data.DataType;
@@ -36,8 +35,8 @@ public class ReflectionUDFParametersTest {
 	private static FieldSchema mRateFieldSchemaSensitive;
 	private static FieldSchema mScoreTupleFieldSchemaSensitive;
 	private static FieldSchema mInputFieldSchemaSensitive;
-	private static ArrayList<ColumnName> mOutputColumnNamesScoreSensitive;
-	private static ArrayList<ColumnName> mOutputColumnNamesRateSensitive;
+	private static ArrayList<ColumnIndexInformation> mOutputColumnIndexInformationsScoreSensitive;
+	private static ArrayList<ColumnIndexInformation> mOutputColumnIndexInformationsRateSensitive;
 
 	@BeforeClass
 	public static void initSensitive() throws FrontendException {
@@ -53,34 +52,34 @@ public class ReflectionUDFParametersTest {
 				TestUtil.createSchema(mScoreTupleFieldSchemaSensitive),
 				DataType.BAG);
 
-		ColumnName tScoreTupleColumnNameScore = new ColumnName("score_tuple", 0, mScoreTupleFieldSchemaSensitive, AccessType.SUB_BAG);
-		tScoreTupleColumnNameScore.setChild(new ColumnName("score", 0, mScoreFieldSchemaSensitive, AccessType.SUB_BAG));
-		ColumnName tParentColumnNameScore = new ColumnName("", 0, mInputFieldSchemaSensitive, AccessType.FLAT);
-		tParentColumnNameScore.setChild(tScoreTupleColumnNameScore);
-		mOutputColumnNamesScoreSensitive = new ArrayList<ColumnName>();
-		mOutputColumnNamesScoreSensitive.add(tParentColumnNameScore);
+		DefaultColumnIndexInformation tScoreTupleColumnIndexInformationScore = new DefaultColumnIndexInformation(0, mScoreTupleFieldSchemaSensitive, AccessType.SUB_BAG);
+		tScoreTupleColumnIndexInformationScore.setChild(new DefaultColumnIndexInformation(0, mScoreFieldSchemaSensitive, AccessType.SUB_BAG));
+		DefaultColumnIndexInformation tParentColumnIndexInformationScore = new DefaultColumnIndexInformation(0, mInputFieldSchemaSensitive, AccessType.FLAT);
+		tParentColumnIndexInformationScore.setChild(tScoreTupleColumnIndexInformationScore);
+		mOutputColumnIndexInformationsScoreSensitive = new ArrayList<ColumnIndexInformation>();
+		mOutputColumnIndexInformationsScoreSensitive.add(tParentColumnIndexInformationScore);
 
-		ColumnName tScoreTupleColumnNameRate = new ColumnName("score_tuple", 0, mScoreTupleFieldSchemaSensitive, AccessType.SUB_BAG);
-		tScoreTupleColumnNameRate.setChild(new ColumnName("rate", 1, mRateFieldSchemaSensitive, AccessType.SUB_BAG));
-		ColumnName tParentColumnNameRate = new ColumnName("", 0, mInputFieldSchemaSensitive, AccessType.FLAT);
-		tParentColumnNameRate.setChild(tScoreTupleColumnNameRate);
-		mOutputColumnNamesRateSensitive = new ArrayList<ColumnName>();
-		mOutputColumnNamesRateSensitive.add(tParentColumnNameRate);
+		DefaultColumnIndexInformation tScoreTupleColumnIndexInformationRate = new DefaultColumnIndexInformation(0, mScoreTupleFieldSchemaSensitive, AccessType.SUB_BAG);
+		tScoreTupleColumnIndexInformationRate.setChild(new DefaultColumnIndexInformation(1, mRateFieldSchemaSensitive, AccessType.SUB_BAG));
+		DefaultColumnIndexInformation tParentColumnIndexInformationRate = new DefaultColumnIndexInformation(0, mInputFieldSchemaSensitive, AccessType.FLAT);
+		tParentColumnIndexInformationRate.setChild(tScoreTupleColumnIndexInformationRate);
+		mOutputColumnIndexInformationsRateSensitive = new ArrayList<ColumnIndexInformation>();
+		mOutputColumnIndexInformationsRateSensitive.add(tParentColumnIndexInformationRate);
 	}
 
 	@Test
 	public void testParseReflectionUDFParameters_SensitiveSchema_SensitiveColumnControl() throws Throwable {
-		TestUtil.assertEqualsPigObjects(mOutputColumnNamesScoreSensitive,
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsScoreSensitive,
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.score_tuple.score", mInputFieldSchemaSensitive));
-		TestUtil.assertEqualsPigObjects(mOutputColumnNamesRateSensitive,
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsRateSensitive,
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.score_tuple.rate", mInputFieldSchemaSensitive));
 	}
 
 	@Test
 	public void testParseReflectionUDFParameters_SensitiveSchema_LooseColumnControl() throws Throwable {
-		TestUtil.assertEqualsPigObjects(mOutputColumnNamesScoreSensitive,
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsScoreSensitive,
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.score", mInputFieldSchemaSensitive));
-		TestUtil.assertEqualsPigObjects(mOutputColumnNamesRateSensitive,
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsRateSensitive,
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.rate", mInputFieldSchemaSensitive));
 	}
 
@@ -89,8 +88,8 @@ public class ReflectionUDFParametersTest {
 	private static FieldSchema mScoreFieldSchemaLoose;
 	private static FieldSchema mRateFieldSchemaLoose;
 	private static FieldSchema mInputFieldSchemaLoose;
-	private static ArrayList<ColumnName> mOutputColumnNamesScoreLoose;
-	private static ArrayList<ColumnName> mOutputColumnNamesRateLoose;
+	private static ArrayList<ColumnIndexInformation> mOutputColumnIndexInformationsScoreLoose;
+	private static ArrayList<ColumnIndexInformation> mOutputColumnIndexInformationsRateLoose;
 
 	@BeforeClass
 	public static void initLoose() throws FrontendException {
@@ -103,22 +102,22 @@ public class ReflectionUDFParametersTest {
 						),
 				DataType.BAG);
 
-		ColumnName tParentColumnNameScore = new ColumnName("", 0, mInputFieldSchemaLoose, AccessType.FLAT);
-		tParentColumnNameScore.setChild(new ColumnName("score", 0, mScoreFieldSchemaLoose, AccessType.SUB_BAG));
-		mOutputColumnNamesScoreLoose = new ArrayList<ColumnName>();
-		mOutputColumnNamesScoreLoose.add(tParentColumnNameScore);
+		DefaultColumnIndexInformation tParentColumnIndexInformationScore = new DefaultColumnIndexInformation(0, mInputFieldSchemaLoose, AccessType.FLAT);
+		tParentColumnIndexInformationScore.setChild(new DefaultColumnIndexInformation(0, mScoreFieldSchemaLoose, AccessType.SUB_BAG));
+		mOutputColumnIndexInformationsScoreLoose = new ArrayList<ColumnIndexInformation>();
+		mOutputColumnIndexInformationsScoreLoose.add(tParentColumnIndexInformationScore);
 
-		ColumnName tParentColumnNameRate = new ColumnName("", 0, mInputFieldSchemaLoose, AccessType.FLAT);
-		tParentColumnNameRate.setChild(new ColumnName("rate", 1, mRateFieldSchemaLoose, AccessType.SUB_BAG));
-		mOutputColumnNamesRateLoose = new ArrayList<ColumnName>();
-		mOutputColumnNamesRateLoose.add(tParentColumnNameRate);
+		DefaultColumnIndexInformation tParentColumnIndexInformationRate = new DefaultColumnIndexInformation(0, mInputFieldSchemaLoose, AccessType.FLAT);
+		tParentColumnIndexInformationRate.setChild(new DefaultColumnIndexInformation(1, mRateFieldSchemaLoose, AccessType.SUB_BAG));
+		mOutputColumnIndexInformationsRateLoose = new ArrayList<ColumnIndexInformation>();
+		mOutputColumnIndexInformationsRateLoose.add(tParentColumnIndexInformationRate);
 	}
 
 	@Test
 	public void testParseReflectionUDFParameters_LooseSchema_LooseColumnControl() throws Throwable {
-		TestUtil.assertEqualsPigObjects(mOutputColumnNamesScoreLoose,
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsScoreLoose,
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.score", mInputFieldSchemaLoose));
-		TestUtil.assertEqualsPigObjects(mOutputColumnNamesRateLoose,
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsRateLoose,
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.rate", mInputFieldSchemaLoose));
 	}
 

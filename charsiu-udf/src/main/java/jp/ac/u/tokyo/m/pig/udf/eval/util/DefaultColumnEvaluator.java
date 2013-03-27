@@ -25,15 +25,21 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
 public class DefaultColumnEvaluator implements ColumnEvaluator {
 
 	private final ReflectionUDFSetting mReflectUDFSetting;
-	private final ColumnAccessor mColumnAccessor;
-	private final EvalFunc<?> mUDF;
+	final ColumnAccessor mColumnAccessor;
+	final EvalFunc<?> mUDF;
 
 	public DefaultColumnEvaluator(ColumnAccessor aColumnAccessor, ReflectionUDFSetting aReflectUDFSetting) throws InstantiationException, IllegalAccessException, FrontendException, CloneNotSupportedException {
 		mColumnAccessor = aColumnAccessor;
 		mReflectUDFSetting = aReflectUDFSetting;
 		mUDF = ReflectionUtil.getUDFInstance(aReflectUDFSetting.getClassName(), aColumnAccessor.getInputSchema());
 	}
-	
+
+	DefaultColumnEvaluator(ColumnAccessor aColumnAccessor, EvalFunc<?> aUDF) {
+		mColumnAccessor = aColumnAccessor;
+		mReflectUDFSetting = null;
+		mUDF = aUDF;
+	}
+
 	public ReflectionUDFSetting getReflectUDFSetting() {
 		return mReflectUDFSetting;
 	}
