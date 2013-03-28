@@ -55,7 +55,7 @@ public class StringableColumnEvaluator implements ColumnEvaluator {
 		}
 	}
 
-	public static StringableColumnEvaluator parse(String aColumnColumnEvaluatorString) throws InstantiationException, IllegalAccessException {
+	public static StringableColumnEvaluator parse(String aColumnColumnEvaluatorString) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if (aColumnColumnEvaluatorString == null || aColumnColumnEvaluatorString.length() == 0) {
 			return new StringableColumnEvaluator(ThroughColumnEvaluator.INSTANCE);
 		} else {

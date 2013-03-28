@@ -28,7 +28,7 @@ public class DefaultColumnEvaluator implements ColumnEvaluator {
 	final ColumnAccessor mColumnAccessor;
 	final EvalFunc<?> mUDF;
 
-	public DefaultColumnEvaluator(ColumnAccessor aColumnAccessor, ReflectionUDFSetting aReflectUDFSetting) throws InstantiationException, IllegalAccessException, FrontendException, CloneNotSupportedException {
+	public DefaultColumnEvaluator(ColumnAccessor aColumnAccessor, ReflectionUDFSetting aReflectUDFSetting) throws InstantiationException, IllegalAccessException, FrontendException, CloneNotSupportedException, ClassNotFoundException {
 		mColumnAccessor = aColumnAccessor;
 		mReflectUDFSetting = aReflectUDFSetting;
 		mUDF = ReflectionUtil.getUDFInstance(aReflectUDFSetting.getClassName(), aColumnAccessor.getInputSchema());

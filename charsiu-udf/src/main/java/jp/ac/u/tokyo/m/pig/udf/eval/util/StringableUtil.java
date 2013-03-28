@@ -37,7 +37,7 @@ public class StringableUtil {
 		return tResultBuilder.toString();
 	}
 
-	public static List<ColumnEvaluator> parseColumnEvaluatorsString(String aColumnEvaluatorsString) throws InstantiationException, IllegalAccessException {
+	public static List<ColumnEvaluator> parseColumnEvaluatorsString(String aColumnEvaluatorsString) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		String[] tElements = aColumnEvaluatorsString.split(MulticastEvaluationConstants.STRINGABLE_LIST_COLUMN_EVALUATOR_DELIMITER);
 		ArrayList<ColumnEvaluator> tResult = new ArrayList<ColumnEvaluator>();
 		for (String tCurrentElement : tElements) {
@@ -61,7 +61,7 @@ public class StringableUtil {
 		return tResultBuilder.toString();
 	}
 
-	public static List<ColumnEvaluationSetting> parseColumnEvaluationSettingsString(String aColumnEvaluationSettingsString) throws InstantiationException, IllegalAccessException {
+	public static List<ColumnEvaluationSetting> parseColumnEvaluationSettingsString(String aColumnEvaluationSettingsString) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		String[] tElements = aColumnEvaluationSettingsString.split(MulticastEvaluationConstants.STRINGABLE_LIST_COLUMN_EVALUATION_SETTING_DELIMITER);
 		ArrayList<ColumnEvaluationSetting> tResult = new ArrayList<ColumnEvaluationSetting>();
 		for (String tCurrentElement : tElements) {

@@ -27,14 +27,14 @@ import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
 public class ReflectionUtil {
 
+	// -----------------------------------------------------------------------------------------------------------------
+
 	@SuppressWarnings({ "unchecked", "hiding" })
-	public static <EvalFunc> Class<EvalFunc> getClassForName(String className) {
-		try {
-			return (Class<EvalFunc>) Class.forName(className);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
+	public static <EvalFunc> Class<EvalFunc> getClassForName(String className) throws ClassNotFoundException {
+		return (Class<EvalFunc>) Class.forName(className);
 	}
+
+	// -----------------------------------------------------------------------------------------------------------------
 
 	public static void removeAlias(Schema aTarget) {
 		List<FieldSchema> tFields = aTarget.getFields();
@@ -74,7 +74,9 @@ public class ReflectionUtil {
 		}
 	}
 
-	public static EvalFunc<?> getUDFInstance(String aUDFClassName, Schema aInputSchema) throws InstantiationException, IllegalAccessException, CloneNotSupportedException, FrontendException {
+	// -----------------------------------------------------------------------------------------------------------------
+
+	public static EvalFunc<?> getUDFInstance(String aUDFClassName, Schema aInputSchema) throws InstantiationException, IllegalAccessException, CloneNotSupportedException, FrontendException, ClassNotFoundException {
 		Class<EvalFunc<?>> tMasterUDFClass = getClassForName(aUDFClassName);
 		EvalFunc<?> tMasterUDF = tMasterUDFClass.newInstance();
 		EvalFunc<?> tUDF = null;
@@ -126,5 +128,18 @@ public class ReflectionUtil {
 		}
 		return tUDF;
 	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	public static String getSupportedUDFs(){
+		StringBuilder tResultBuilder = new StringBuilder();
+		for (String tElement : MulticastEvaluationConstants.UDF_REFLECT_MAPPING.keySet()) {
+			tResultBuilder.append(tElement);
+			tResultBuilder.append(", ");
+		}
+		return tResultBuilder.toString();
+	}
+	
+	// -----------------------------------------------------------------------------------------------------------------
 
 }

@@ -26,11 +26,6 @@ import org.junit.Test;
 
 public class StringableUtilTest {
 
-	// TODO String => List<ColumnEvaluator>
-	// TODO ^ reverse
-	// TODO String => List<ColumnEvaluationSettings>
-	// TODO ^ reverse
-
 	// -----------------------------------------------------------------------------------------------------------------
 
 	private static String mColumnEvaluatorsString;
@@ -40,7 +35,7 @@ public class StringableUtilTest {
 	private static List<ColumnEvaluationSetting> mColumnEvaluationSettings;
 
 	@BeforeClass
-	public static void init() throws InstantiationException, IllegalAccessException {
+	public static void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		String tColumnAccessorString = "*0,120,0,*0,110,1,*0,10,1,";
 		String tUDFNameMax = "org.apache.pig.builtin.IntMax";
 		String tUDFNameMin = "org.apache.pig.builtin.IntMin";
@@ -66,7 +61,7 @@ public class StringableUtilTest {
 	 * Test of String => List&lt;ColumnEvaluator&gt;
 	 */
 	@Test
-	public void testStringToColumnEvaluators() throws InstantiationException, IllegalAccessException {
+	public void testStringToColumnEvaluators() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		TestUtil.assertEqualsPigObjects(
 				mColumnEvaluators,
 				StringableUtil.parseColumnEvaluatorsString(mColumnEvaluatorsString));
@@ -88,7 +83,7 @@ public class StringableUtilTest {
 	 * Test of String => List&lt;ColumnEvaluationSetting&gt;
 	 */
 	@Test
-	public void testStringToColumnEvaluationSettings() throws InstantiationException, IllegalAccessException {
+	public void testStringToColumnEvaluationSettings() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		TestUtil.assertEqualsPigObjects(
 				mColumnEvaluationSettings,
 				StringableUtil.parseColumnEvaluationSettingsString(mColumnEvaluationSettingsString));

@@ -42,7 +42,7 @@ public class StringableColumnEvaluatorTest {
 	 * Test of String => StringableColumnAccessor(ThroughColumnEvaluator)
 	 */
 	@Test
-	public void testStringToInstance_Through() throws InstantiationException, IllegalAccessException {
+	public void testStringToInstance_Through() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		TestUtil.assertEqualsPigObjects(
 				mInstanceThrough,
 				StringableColumnEvaluator.parse(mInstanceThroughString));
@@ -73,7 +73,7 @@ public class StringableColumnEvaluatorTest {
 	private static EvalFunc<?> mUDF;
 
 	@BeforeClass
-	public static void initDefault() throws FrontendException, InstantiationException, IllegalAccessException {
+	public static void initDefault() throws FrontendException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		FieldSchema tColumn0FieldSchemaSensitive = new FieldSchema("column_0", DataType.INTEGER);
 		FieldSchema tColumn1FieldSchemaSensitive = new FieldSchema("column_1", DataType.INTEGER);
 		FieldSchema tColumn2FieldSchemaSensitive = new FieldSchema("column_2", DataType.INTEGER);
@@ -107,7 +107,7 @@ public class StringableColumnEvaluatorTest {
 	 * Test of String => StringableColumnAccessor(DefaultColumnEvaluator)
 	 */
 	@Test
-	public void testStringToInstance_Default() throws InstantiationException, IllegalAccessException {
+	public void testStringToInstance_Default() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		TestUtil.assertEqualsPigObjects(
 				mInstanceDefault,
 				StringableColumnEvaluator.parse(mInstanceDefaultString));

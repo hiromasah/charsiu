@@ -29,6 +29,11 @@ import org.junit.Test;
 
 public class MulticastEvaluateTest {
 
+	// TODO $x アクセスに対応するテスト
+	// {} {()} の構造差を無視して同じAccesserを構成するテスト
+	// {} {()} の構造差を無視して同じスキーマを構成するテスト
+	// TODO 上記のような特殊構造と一般的な構造が混ざっていたときにきちんと評価するメソッドのテスト
+
 	// -----------------------------------------------------------------------------------------------------------------
 
 	private static MulticastEvaluate mMulticastEvaluateSimple;
@@ -40,7 +45,7 @@ public class MulticastEvaluateTest {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	@BeforeClass
-	public static void initSimple() throws FrontendException, InstantiationException, IllegalAccessException {
+	public static void initSimple() throws FrontendException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		mMulticastEvaluateSimple = new MulticastEvaluate(
 				"MAX", "score_.*", "_", "MAX_result",
 				"MIN", "score_.*", "_", "MIN_result");
@@ -113,7 +118,7 @@ public class MulticastEvaluateTest {
 	private static Tuple mOutputDataAll;
 
 	@BeforeClass
-	public static void initAll() throws FrontendException, InstantiationException, IllegalAccessException {
+	public static void initAll() throws FrontendException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		mMulticastEvaluateAll = new MulticastEvaluate(
 				"MIN", "score_.*", "_", "MIN_result",
 				"MAX", "score_.*", "_", "MAX_result",
@@ -140,8 +145,6 @@ public class MulticastEvaluateTest {
 								new FieldSchema("score_2nd_COUNT_result", DataType.LONG)
 								),
 						DataType.TUPLE));
-		// dog {(3),(1),(7)} cat {(2),(5),(8)}
-		// dog 7 1 cat 8 2
 		mOutputDataAll = TestUtil.createTuple(
 				"dog",
 				1, 7, 12, 4.0, 3, 3,
@@ -172,20 +175,19 @@ public class MulticastEvaluateTest {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	private static MulticastEvaluate mMulticastEvaluateSensitive;
-	private static Schema INPUT_SCHEMA;
-	private static Tuple INPUT_DATA;
-	private static Tuple OUTPUT_DATA;
+	private static Schema mInputSchemaSensitive;
+	private static Schema mOutputSchemaSensitive;
+	private static Tuple mInputDataSensitive;
+	private static Tuple mOutputDataSensitive;
 
-	// {name_1st: chararray, score_1st: {score_tuple: (score: int)},name_2nd: chararray,score_2nd: {score_tuple: (score: int)}}
-	// {name_1st: chararray, score_1st: {score_tuple: (score: int)},name_2st: chararray,score_2st: {score_tuple: (score: int)}}
-	// [name_1st: chararray, score_1st: bag({score_tuple: (score: int)}), name_2st: chararray, score_2st: bag({score_tuple: (score: int)})]
 	@BeforeClass
-	public static void initSensitive() throws FrontendException, InstantiationException, IllegalAccessException {
+	public static void initSensitive() throws FrontendException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		mMulticastEvaluateSensitive = new MulticastEvaluate(
 				"MAX", "score_.*", "_.score_tuple.score", "MAX_result",
 				"MIN", "score_.*", "_.score_tuple.score", "MIN_result");
 
-		INPUT_SCHEMA = TestUtil.createSchema(
+		// {name_1st: chararray, score_1st: {score_tuple: (score: int)},name_2nd: chararray,score_2nd: {score_tuple: (score: int)}}
+		mInputSchemaSensitive = TestUtil.createSchema(
 				new FieldSchema("name_1st", DataType.CHARARRAY),
 				new FieldSchema("score_1st",
 						TestUtil.createSchema(
@@ -205,78 +207,70 @@ public class MulticastEvaluateTest {
 										DataType.TUPLE)),
 						DataType.BAG)
 				);
+		mOutputSchemaSensitive = TestUtil.createSchema(
+				new FieldSchema(AliasConstants.MULTICAST_EVALUATE_ALIAS_TOP,
+						TestUtil.createSchema(
+								new FieldSchema("name_1st", DataType.CHARARRAY),
+								new FieldSchema("score_1st_MAX_result", DataType.INTEGER),
+								new FieldSchema("score_1st_MIN_result", DataType.INTEGER),
+								new FieldSchema("name_2nd", DataType.CHARARRAY),
+								new FieldSchema("score_2nd_MAX_result", DataType.INTEGER),
+								new FieldSchema("score_2nd_MIN_result", DataType.INTEGER)
+								),
+						DataType.TUPLE));
 
 		// dog {(3),(1),(7)} cat {(2),(1),(8)}
-		INPUT_DATA = TestUtil.createTuple(
+		mInputDataSensitive = TestUtil.createTuple(
 				"dog",
 				TestUtil.createBag(1, 3, 1, 7),
 				"cat",
 				TestUtil.createBag(1, 2, 1, 8));
 
-		OUTPUT_DATA = TestUtil.createTuple(
+		mOutputDataSensitive = TestUtil.createTuple(
 				"dog",
 				7, 1,
 				"cat",
 				8, 1);
 	}
 
-	// -----------------------------------------------------------------------------------------------------------------
-
-	// TODO $x アクセスに対応するテスト
-	// {} {()} の構造差を無視して同じAccesserを構成するテスト
-	// {} {()} の構造差を無視して同じスキーマを構成するテスト
-	// TODO 上記のような特殊構造と一般的な構造が混ざっていたときにきちんと評価するメソッドのテスト
-	// TODO conf serialize のてすと
+	@Test
+	public void testSchemaSensitive() throws Throwable {
+		TestUtil.assertEqualsPigObjects(
+				mOutputSchemaSensitive,
+				mMulticastEvaluateSensitive.outputSchema(mInputSchemaSensitive));
+	}
 
 	@Test
-	public void testExec() throws Throwable {
-		mMulticastEvaluateSensitive.outputSchema(INPUT_SCHEMA);
+	public void testExecSensitive() throws Throwable {
+		mMulticastEvaluateSensitive.outputSchema(mInputSchemaSensitive);
 		mMulticastEvaluateSensitive = new MulticastEvaluate(
 				"MAX", "score_.*", "_.score_tuple.score", "MAX_result",
 				"MIN", "score_.*", "_.score_tuple.score", "MIN_result");
-		TestUtil.assertEqualsPigObjects(OUTPUT_DATA, mMulticastEvaluateSensitive.exec(INPUT_DATA));
-	}
+		TestUtil.assertEqualsPigObjects(mOutputDataSensitive, mMulticastEvaluateSensitive.exec(mInputDataSensitive));
 
-	// @Test
-	// public void testRemoveAlias() throws Throwable {
-	// Schema tSchema = INPUT_SCHEMA.clone();
-	// ReflectionUtil.removeAlias(tSchema);
-	// System.out.println("**** " + tSchema);
-	// ReflectionUtil.removeTupleInBag(tSchema);
-	// System.out.println("**** " + tSchema);
-	//
-	// mMulticastEvaluate.outputSchema(INPUT_SCHEMA);
-	// TestUtil.assertEqualsPigObjects(OUTPUT_DATA, mMulticastEvaluate.exec(INPUT_DATA));
-	// }
-	//
-	// @Test
-	// public void testRemoveTupleInBag() throws Throwable {
-	// Schema tSchema = INPUT_SCHEMA.clone();
-	// ReflectionUtil.removeAlias(tSchema);
-	// System.out.println("**** " + tSchema);
-	// ReflectionUtil.removeTupleInBag(tSchema);
-	// System.out.println("**** " + tSchema);
-	//
-	// mMulticastEvaluate.outputSchema(INPUT_SCHEMA);
-	// TestUtil.assertEqualsPigObjects(OUTPUT_DATA, mMulticastEvaluate.exec(INPUT_DATA));
-	// }
+	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	// @Test(expected = RuntimeException.class)
-	// public void testExecExceptionDigit1() throws Throwable {
-	// mAddDaySpan.exec(TestUtil.createTuple("x", 0));
-	// }
-	//
-	// @Test(expected = RuntimeException.class)
-	// public void testExecExceptionDigit8() throws Throwable {
-	// mAddDaySpan.exec(TestUtil.createTuple("yyyyMMdd", 0));
-	// }
-	//
-	// @Test(expected = IllegalArgumentException.class)
-	// public void testExecExceptionDigit7() throws Throwable {
-	// mAddDaySpan.exec(TestUtil.createTuple("GyyMMdd", 0));
-	// }
+	@Test
+	public void testFQCNUDFName() throws Throwable {
+		new MulticastEvaluate(
+				"org.apache.pig.builtin.DIFF", "score_.*", "_.score_tuple.score", "result");
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionUnknownUDF() throws Throwable {
+		new MulticastEvaluate(
+				"UnknownUDF", "score_.*", "_.score_tuple.score", "result");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testExceptionNotUDF() throws Throwable {
+		new MulticastEvaluate(
+				"java.lang.String", "score_.*", "_.score_tuple.score", "result");
+	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 

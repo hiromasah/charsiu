@@ -62,8 +62,9 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 	 *            aArgs are ('\<UDF\>', '\<bag column regex\>', '\<column control\>', '\<alias suffix\>'[, ... ])
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
 	 */
-	public MulticastEvaluate(String... aArgs) throws InstantiationException, IllegalAccessException {
+	public MulticastEvaluate(String... aArgs) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super();
 		int tArgLength = aArgs.length;
 		if (tArgLength % 4 != 0)
@@ -72,10 +73,18 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 		for (int i = 0; i < tArgLength; i++) {
 			String tShortClassName = aArgs[i];
 			String tClassName = MulticastEvaluationConstants.UDF_REFLECT_MAPPING.get(tShortClassName);
-			// TODO 例外メッセージ（2行目に対応しているクラス一覧を表示。自動化。）
-			if (tClassName == null)
-				throw new IllegalArgumentException("unknown UDF : " + tShortClassName + "\n" +
-						"MulticastEvaluate supported : MIN, MAX, SUM, AVG, SIZE, COUNT");
+			if (tClassName == null) {
+				try {
+					ReflectionUtil.getClassForName(tShortClassName);
+				} catch (Throwable e) {
+					// if can't find tShortClassName as FQCN
+					throw new IllegalArgumentException("unknown UDF : " + tShortClassName + "\n" +
+							"MulticastEvaluate supported : " + ReflectionUtil.getSupportedUDFs() + "and Fully Qualified Class Name of UDF",
+							e);
+				}
+				// tShortClassName is FQCN
+				tClassName = tShortClassName;
+			}
 			tReflectUDFSettings.add(new ReflectionUDFSetting(tClassName, aArgs[++i], aArgs[++i], aArgs[++i]));
 		}
 		String tKey = mPropertyKeyColumnEvaluationSettings = generatePropertyKey(aArgs);
