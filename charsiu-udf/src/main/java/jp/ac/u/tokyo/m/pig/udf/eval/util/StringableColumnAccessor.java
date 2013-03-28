@@ -41,12 +41,10 @@ public class StringableColumnAccessor implements ColumnAccessor {
 	@Override
 	public Tuple generate(Object aColumnValue) {
 		ArrayList<Object> tTuple = new ArrayList<Object>();
-		for (ColumnIndexInformation tColumnName : mColumnIndexInformations) {
-			if (tColumnName.hasChild()) {
-				// TODO 例外処理
-				// TODO 実装（ hasChild 時の多階層解析）
+		for (ColumnIndexInformation tColumnIndex : mColumnIndexInformations) {
+			if (tColumnIndex.hasChild()) {
 				try {
-					generateChildValue(tTuple, tColumnName, aColumnValue);
+					generateChildValue(tTuple, tColumnIndex, aColumnValue);
 				} catch (ExecException e) {
 					throw new RuntimeException(e);
 				}
@@ -58,24 +56,33 @@ public class StringableColumnAccessor implements ColumnAccessor {
 		return TupleFactory.getInstance().newTupleNoCopy(tTuple);
 	}
 
-	private void generateChildValue(ArrayList<Object> aResultTuple, ColumnIndexInformation aColumnName, Object aColumnValue) throws ExecException {
+	// TODO 実装（ hasChild 時の多階層解析）
+	private void generateChildValue(ArrayList<Object> aResultTuple, ColumnIndexInformation aColumnIndex, Object aColumnValue) throws ExecException {
 		DataBag tDataSourceBag = null;
 
 		Object tDataSource = aColumnValue;
-		ColumnIndexInformation tCurrentColumnName = aColumnName;
-		while (tCurrentColumnName.hasChild()) {
-			ColumnIndexInformation tNextColumnName = tCurrentColumnName.getChild();
-			if (tNextColumnName.getAccessType() == AccessType.SUB_BAG) {
+		ColumnIndexInformation tCurrentColumnIndex = aColumnIndex;
+		while (tCurrentColumnIndex.hasChild()) {
+			ColumnIndexInformation tNextColumnIndex = tCurrentColumnIndex.getChild();
+			if (tNextColumnIndex.getAccessType() == AccessType.SUB_BAG) {
 				// subbag 対象の bag を特定
 				tDataSourceBag = DataType.toBag(tDataSource);
 				break;
 			} else {
 				// TODO 実装（プロトタイプ版では１層目が Bag の物しか扱わない、ということにする）
-				switch (tCurrentColumnName.getFieldType()) {
-				case DataType.BAG:
-					// tDataSource = DataType.toBag(aColumnValue);
-					break;
+				switch (tCurrentColumnIndex.getFieldType()) {
 				case DataType.TUPLE:
+					// tDataSource を child のものに更新、他も併せて更新
+					// continue
+					break;
+				case DataType.INTEGER: // 他 unstructured data
+					// 
+					// return
+					break;
+				case DataType.BAG:
+					// ありえない
+					// subbag 以外で bag にアクセスするのはサポート外。 unsupported exception 投げる。
+					// いや、flat タイプの bag アクセス？ bag そのまま返す。
 					break;
 				default:
 					// aResultTuple.add(e);
@@ -85,8 +92,8 @@ public class StringableColumnAccessor implements ColumnAccessor {
 		}
 
 		// 次層が Tuple なら無視してその次の index
-		ColumnIndexInformation tNextColumnName = tCurrentColumnName.getChild();
-		int tChildIndex = tNextColumnName.getFieldType() == DataType.TUPLE ? tNextColumnName.getChild().getIndex() : tNextColumnName.getIndex();
+		ColumnIndexInformation tNextColumnIndex = tCurrentColumnIndex.getChild();
+		int tChildIndex = tNextColumnIndex.getFieldType() == DataType.TUPLE ? tNextColumnIndex.getChild().getIndex() : tNextColumnIndex.getIndex();
 		Iterator<Tuple> tDataSourceBagIterator = tDataSourceBag.iterator();
 		ArrayList<Tuple> tProtoBag = new ArrayList<Tuple>();
 
@@ -96,7 +103,6 @@ public class StringableColumnAccessor implements ColumnAccessor {
 		}
 
 		aResultTuple.add(DefaultBagFactory.getInstance().newDefaultBag(tProtoBag));
-
 	}
 
 	private Tuple createTuple(Object aValue) {

@@ -24,6 +24,7 @@ public class MulticastEvaluationConstants {
 		FLAT,
 		SUB_BAG
 	}
+
 	static final HashMap<String, String> UDF_REFLECT_MAPPING = new HashMap<String, String>();
 	static {
 		// Pig built in Functions
@@ -35,15 +36,15 @@ public class MulticastEvaluationConstants {
 		UDF_REFLECT_MAPPING.put("COUNT", "org.apache.pig.builtin.COUNT");
 
 		// charsiu functions
-//		UDF_REFLECT_MAPPING.put("TupleFirst", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleFirst");
-//		UDF_REFLECT_MAPPING.put("TupleMax", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMax");
-//		UDF_REFLECT_MAPPING.put("TupleMin", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMin");
+		// UDF_REFLECT_MAPPING.put("TupleFirst", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleFirst");
+		// UDF_REFLECT_MAPPING.put("TupleMax", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMax");
+		// UDF_REFLECT_MAPPING.put("TupleMin", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMin");
 	}
 
 	public static final String REFLECTION_UDF_PARAMETERS_ROOT_COLUMN = "_";
 	public static final String REFLECTION_UDF_PARAMETERS_ACCESSOR = "\\.";
 	public static final String REFLECTION_UDF_PARAMETERS_SEPARATOR = ",";
-	
+
 	public static final String STRINGABLE_COLUMN_INDEX_INFORMATION_HEAD_MARKER_REGEX = "\\*";
 	public static final String STRINGABLE_COLUMN_INDEX_INFORMATION_HEAD_MARKER = "*";
 	public static final String STRINGABLE_COLUMN_INDEX_INFORMATION_DELIMITER = ",";

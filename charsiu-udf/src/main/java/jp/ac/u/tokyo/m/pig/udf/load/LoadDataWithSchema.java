@@ -58,13 +58,13 @@ public class LoadDataWithSchema extends PigStorage implements LoadMetadata {
 		super(aDelimiter);
 	}
 
-	// TODO 実装
+	// XXX for free encoding
 	// public LoadDataWithSchema(String aDelimiter, String aEncoding) {
 	// this(aDelimiter);
 	// mEncoding = aEncoding;
 	// }
 
-	// TODO 実装
+	// XXX for free encoding
 	// public LoadDataWithSchema(String aDelimiter, String aEncoding, String aSchemaFileLocation) {
 	// this(aDelimiter, aEncoding);
 	// mSchemaFileLocation = aSchemaFileLocation;
@@ -72,7 +72,7 @@ public class LoadDataWithSchema extends PigStorage implements LoadMetadata {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	// TODO 実装
+	// XXX for free encoding
 	// @SuppressWarnings("rawtypes")
 	// @Override
 	// public InputFormat getInputFormat() throws IOException {

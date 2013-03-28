@@ -154,18 +154,6 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	// TODO 可能なら実装する
-	// @Override
-	// public List<FuncSpec> getArgToFuncMapping() throws FrontendException {
-	// List<FuncSpec> tFuncList = new ArrayList<FuncSpec>();
-	// Schema tSchema = new Schema();
-	// tSchema.add(new Schema.FieldSchema(null, DataType.BAG));
-	// tFuncList.add(new FuncSpec(this.getClass().getName(), tSchema));
-	// return tFuncList;
-	// }
-
-	// -----------------------------------------------------------------------------------------------------------------
-
 	@Override
 	public Schema outputSchema(Schema aInput) {
 		// このカラムをどう変換するか、という情報にまとめる
@@ -196,10 +184,8 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 						tCurrentOutputFieldSchema.alias = tCurrentFieldAlias + "_" + tReflectUDFSetting.getAliasSuffix();
 						tInnerTupleSchema.add(tCurrentOutputFieldSchema);
 					} catch (Throwable e) {
-						// TODO 例外処理
 						throw new RuntimeException(e);
 					}
-					// System.out.println(tReflectUDFSetting + " // matches : " + tFieldSchema.alias);
 				}
 			}
 			// 評価が設定されていないカラムはスルー評価器を設定する
@@ -224,7 +210,6 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 							tInnerTupleSchema,
 							DataType.TUPLE));
 		} catch (FrontendException e) {
-			// TODO 例外処理
 			throw new RuntimeException(e);
 		}
 		return tOutputSchema;
