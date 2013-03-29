@@ -1,0 +1,73 @@
+#
+#   Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+#
+
+error_code : chararray
+hospcd : chararray
+ptid : chararray
+dtdisc : chararray
+dtadm : chararray
+datakubun : chararray
+jun_seqno : chararray
+meiseqno : chararray
+byouten : chararray
+rececd : chararray
+kaino : chararray
+mei_mei : chararray
+ryou : float
+kitanni : chararray
+meiten : float
+enten : chararray
+dekiten : float
+dekihou : chararray
+kouten : float
+kouyaku : float
+kouzai : float
+koukai : float
+hokenno : chararray
+recesyucd : chararray
+zissibi : chararray
+recekakubun : chararray
+ka_kubun : chararray
+drcd : chararray
+byotocd : chararray
+byotokubun : chararray
+nyugai : chararray
+hosptype : chararray
+DUMMY_32 : chararray
+DUMMY_33 : chararray
+DUMMY_34 : chararray
+DUMMY_35 : chararray
+DUMMY_36 : chararray
+DUMMY_37 : chararray
+DUMMY_38 : chararray
+DUMMY_39 : chararray
+DUMMY_40 : chararray
+DUMMY_41 : chararray
+DUMMY_42 : chararray
+DUMMY_43 : chararray
+DUMMY_44 : chararray
+DUMMY_45 : chararray
+DUMMY_46 : chararray
+DUMMY_47 : chararray
+DUMMY_48 : chararray
+DUMMY_49 : chararray
+DUMMY_50 : chararray
+sinnengetu : chararray
+DUMMY_52 : chararray
+DUMMY_53 : chararray
+DUMMY_54 : chararray
+DUMMY_55 : chararray
+DUMMY_56 : chararray

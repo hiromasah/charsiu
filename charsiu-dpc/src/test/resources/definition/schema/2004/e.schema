@@ -14,24 +14,30 @@
 #   limitations under the License.
 #
 
-GetDaySpan.OutAlias = day_span
-AddDaySpan.OutAlias = added_day_span
-GetYearSpan.OutAlias = year_span
-
-InnerGroup.OutAlias.Top = innergroup
-InnerGroup.OutAlias.GroupNamePrefix = group_name_
-InnerGroup.OutAlias.GroupBagPrefix = group_bag_
-
-ValueJoin.OutAlias.Top = joined_values
-ValueJoin.OutAlias.Inner.GroupName = group_name
-
-PickupSequenceValues.OutAlias.Top = sequence_values
-PickupSequenceValues.OutAlias.Inner = sequence_member_bag
-
-First.OutAlias.Top = first_tuple
-
-TupleMax.OutAlias.Top = max_tuples
-
-TupleMin.OutAlias.Top = min_tuples
-
-MulticastEvaluate.OutAlias.Top = multicasted
+hospcd : chararray
+ptid : chararray
+dtdisc : chararray
+dtadm : chararray
+datakubun : chararray
+jun_seqno : chararray
+byouten : chararray
+rececd : chararray
+kaino : chararray
+kouimei : chararray
+kouten : float
+kouyaku : float
+kouzai : float
+enten : chararray
+koukai : float
+hokenno : chararray
+recesyucd : chararray
+zissibi : chararray
+recekakubun : chararray
+ka_kubun : chararray
+drcd : chararray
+byotocd : chararray
+byotokubun : chararray
+nyugai : chararray
+hosptype : chararray
+nyuseqno : int
+sinnengetu : chararray

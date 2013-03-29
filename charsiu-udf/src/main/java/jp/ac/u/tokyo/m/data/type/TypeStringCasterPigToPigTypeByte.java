@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping;
+package jp.ac.u.tokyo.m.data.type;
 
-import jp.ac.u.tokyo.m.data.type.AbstractPigTypeStringCaster;
 
 import org.apache.pig.data.DataType;
 

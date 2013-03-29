@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Hiromasa Horiguchi ( The University of Tokyo )
+ * Copyright 2012-2013 Hiromasa Horiguchi ( The University of Tokyo )
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import jp.ac.u.tokyo.m.string.StringFormatConstants;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.pig.ResourceSchema;
 import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.ResourceStatistics;
@@ -46,6 +47,7 @@ public class StoreDataWithSchema extends PigStorage implements StoreMetadata {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	private String mFieldDelimiter = StoreConstants.STORE_DELIMITER_FIELD;
+	private String mEncoding = StringFormatConstants.TEXT_FORMAT_UTF8;
 
 	// -----------------------------------------------------------------------------------------------------------------
 
@@ -56,6 +58,19 @@ public class StoreDataWithSchema extends PigStorage implements StoreMetadata {
 	public StoreDataWithSchema(String aFieldDelimiter) {
 		super(aFieldDelimiter);
 		mFieldDelimiter = aFieldDelimiter;
+	}
+
+	public StoreDataWithSchema(String aFieldDelimiter, String aEncoding) {
+		this(aFieldDelimiter);
+		mEncoding = aEncoding;
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public OutputFormat getOutputFormat() {
+		return new FreeEncodingPigTextOutputFormat(mFieldDelimiter, mEncoding);
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -111,7 +126,7 @@ public class StoreDataWithSchema extends PigStorage implements StoreMetadata {
 	}
 
 	private void writeString(OutputStream aOutputStream, String aFieldName) throws IOException, UnsupportedEncodingException {
-		aOutputStream.write(aFieldName.getBytes(StringFormatConstants.TEXT_FORMAT_UTF8));
+		aOutputStream.write(aFieldName.getBytes(mEncoding));
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

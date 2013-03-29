@@ -14,24 +14,12 @@
 #   limitations under the License.
 #
 
-GetDaySpan.OutAlias = day_span
-AddDaySpan.OutAlias = added_day_span
-GetYearSpan.OutAlias = year_span
-
-InnerGroup.OutAlias.Top = innergroup
-InnerGroup.OutAlias.GroupNamePrefix = group_name_
-InnerGroup.OutAlias.GroupBagPrefix = group_bag_
-
-ValueJoin.OutAlias.Top = joined_values
-ValueJoin.OutAlias.Inner.GroupName = group_name
-
-PickupSequenceValues.OutAlias.Top = sequence_values
-PickupSequenceValues.OutAlias.Inner = sequence_member_bag
-
-First.OutAlias.Top = first_tuple
-
-TupleMax.OutAlias.Top = max_tuples
-
-TupleMin.OutAlias.Top = min_tuples
-
-MulticastEvaluate.OutAlias.Top = multicasted
+name : chararray
+age : int
+# 2006年版 では money カラムを削除 money : long
+height : float
+weight : double
+# bytearray はデータにはないだろうが念のためチェックする。
+code : bytearray
+# 2005年版 では以下のカラムを追加
+location : chararray

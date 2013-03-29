@@ -24,10 +24,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import jp.ac.u.tokyo.m.data.type.TypeStringCasterPigToPigTypeByte;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCColumnSchema;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCRowDataMapping;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.DPCSchemaCacheLoader;
-import jp.ac.u.tokyo.m.dpc.pig.udf.load.mapping.TypeStringCasterPigToPigTypeByte;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.DefinitionResourceLoadUtil;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.FileStatusWithVersion;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.LoadFileFilter;
@@ -35,6 +35,7 @@ import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.LoadFilesFormatParseUtil;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.MultiFileInputFormat;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.PathConstants;
 import jp.ac.u.tokyo.m.dpc.pig.udf.load.path.PathUtil;
+import jp.ac.u.tokyo.m.dpc.specific.SpecificConstants;
 import jp.ac.u.tokyo.m.ini.Ini;
 import jp.ac.u.tokyo.m.ini.Ini.Section;
 import jp.ac.u.tokyo.m.log.LogUtil;
@@ -67,7 +68,7 @@ import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 
 /**
- * Reads and absorbs the differentce between the file format and the schema by year of DPC data.<br>
+ * Reads and absorbs the difference between the file format and the schema by year of DPC data.<br>
  * <br>
  * HDFS上に特定構造で格納されている DPCデータ を、スキーマ情報付きで読み込みます。<br>
  */
@@ -163,10 +164,7 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	 */
 	@Override
 	public void setLocation(String aLocation, Job aJob) throws IOException {
-		Configuration tConfiguration = aJob.getConfiguration();
-		FileSystem tFileSystem = FileSystem.get(tConfiguration);
-
-		List<FileStatus> tUnfilteredLoadTargetFileStatusList = getUnfilteredLoadTargetFileStatusList(aLocation, tConfiguration, tFileSystem);
+		List<FileStatus> tUnfilteredLoadTargetFileStatusList = getUnfilteredLoadTargetFileStatusList(aLocation, aJob.getConfiguration());
 		LoadFileFilter tLoadFileFileter = createLoadFileFilter();
 		LinkedHashMap<String, FileStatusWithVersion> tFileStatusVersionListContainsSubmitNumber = new LinkedHashMap<String, FileStatusWithVersion>();
 		List<FileStatus> tFileStatusListNoSubmitNumber = new ArrayList<FileStatus>();
@@ -195,8 +193,11 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	 *         All FileStatus included in aLocation.<br>
 	 *         aLocation に含まれる全ての FileStatus<br>
 	 */
-	private List<FileStatus> getUnfilteredLoadTargetFileStatusList(String aLocation, Configuration tConfiguration, FileSystem tFileSystem) throws IOException {
-		Collection<String> tBaseDirectories = LoadFilesFormatParseUtil.parseLoadFilesFormat(aLocation, tConfiguration);
+	private List<FileStatus> getUnfilteredLoadTargetFileStatusList(String aLocation, Configuration aConfiguration) throws IOException {
+		String tDpcDataDirectory = aConfiguration.get(SpecificConstants.CONFIGURATION_KEY_DPC_DATA_DIRECTORY, SpecificConstants.DPC_DATA_DIRECTORY_DEFAULT);
+		Path tDpcDataDirectoryPath = new Path(tDpcDataDirectory);
+		FileSystem tFileSystem = tDpcDataDirectoryPath.getFileSystem(aConfiguration);
+		Collection<String> tBaseDirectories = LoadFilesFormatParseUtil.parseLoadFilesFormat(aLocation, aConfiguration, tDpcDataDirectory);
 		ArrayList<FileStatus> tInputFileStatusList = new ArrayList<FileStatus>();
 		Iterator<String> tBaseDirectoriesIterator = tBaseDirectories.iterator();
 		while (tBaseDirectoriesIterator.hasNext()) {
@@ -209,7 +210,7 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 				continue;
 			}
 		}
-		List<FileStatus> tFileStatusRecursivelyList = MapRedUtil.getAllFileRecursively(tInputFileStatusList, tConfiguration);
+		List<FileStatus> tFileStatusRecursivelyList = MapRedUtil.getAllFileRecursively(tInputFileStatusList, aConfiguration);
 		return tFileStatusRecursivelyList;
 	}
 
