@@ -11,6 +11,9 @@ public interface ColumnIndexInformation {
 
 	byte getFieldType();
 
+	/**
+	 * @return Access type from a parent.
+	 */
 	AccessType getAccessType();
 
 	ColumnIndexInformation getChild();

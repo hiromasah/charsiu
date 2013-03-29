@@ -93,7 +93,8 @@ public class ReflectionUtil {
 					break;
 				}
 			}
-			// 1周で合致しないまら {()} が問題の可能性が有るので、スキーマを調整してもう一度
+			// Because {()} is it in the possibility of the problem if not equal with one lap, look for it by adjusting a schema once again.
+			// 1周で合致しないなら {()} が問題の可能性が有るので、スキーマを調整してもう一度探す。
 			if (tUDF == null) {
 				removeTupleInBag(tInputSchema);
 				for (FuncSpec tFuncSpec : tArgToFuncMapping) {
@@ -104,15 +105,16 @@ public class ReflectionUtil {
 					}
 				}
 			}
+			// The implementation that only UDF taking the single argument assumes. It is necessary to make implementation in consideration of plural arguments if it supports TupleMax.
 			// XXX 単一の引数をとる UDF しか想定していない実装。 TupleMax などに対応するなら複数引数を考慮する実装にする必要あり。
-			// tFuncSpec.getInputArgsSchema() == {()} の場合
+			// for case of tFuncSpec.getInputArgsSchema() == {()}
 			if (tUDF == null) {
 				for (FuncSpec tFuncSpec : tArgToFuncMapping) {
 					if (tFuncSpec.getInputArgsSchema().getField(0).type == DataType.BAG) {
 						if (tFuncSpec.getInputArgsSchema().getField(0).schema == null
 								|| (tFuncSpec.getInputArgsSchema().getField(0).schema.getField(0).type == DataType.TUPLE
 								&& tFuncSpec.getInputArgsSchema().getField(0).schema.getField(0).schema.size() == 0)) {
-							// empty Bag schema : {()}
+							// case of empty Bag schema : {()}
 							if (Schema.equals(tFuncSpec.getInputArgsSchema(), tInputSchema, true, true)) {
 								Class<EvalFunc<?>> tUDFClass = getClassForName(tFuncSpec.getClassName());
 								tUDF = tUDFClass.newInstance();

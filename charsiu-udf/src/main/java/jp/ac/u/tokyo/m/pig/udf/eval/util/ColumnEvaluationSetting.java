@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 1 カラムに対する編集情報
+ * ColumnEvaluationSetting expresses the editing information for 1 column of the input. <br>
+ * <br>
+ * 入力の1カラムに対する編集情報を表現します。 <br>
  */
 public class ColumnEvaluationSetting {
 

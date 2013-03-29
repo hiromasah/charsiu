@@ -35,7 +35,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 import org.apache.pig.impl.util.UDFContext;
 
 /**
- * (english)<br>
+ * MulticastEvaluate supports the UDF processing to multiple Bag in input Tuple. <br>
  * <br>
  * 渡された Tuple 中の複数の Bag への UDF 処理の記述をサポートします。 <br>
  */
@@ -44,12 +44,16 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * 「どんな処理」を「どのカラム」にするかという情報
+	 * This expresses information "what kind of processing" make "which column".　<br>
+	 * <br>
+	 * 「どんな処理」を「どのカラム」にするかという情報を表します。
 	 */
 	private final List<ReflectionUDFSetting> mReflectUDFSettings;
 
 	/**
-	 * 「カラム毎」に「どんな処理」をするかという情報
+	 * This expresses information "what kind of processing" do to "every column". <br>
+	 * <br>
+	 * 「カラム毎」に「どんな処理」をするかという情報を表します。
 	 */
 	private static List<ColumnEvaluationSetting> mColumnEvaluationSettings;
 
@@ -138,7 +142,9 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 	}
 
 	/**
-	 * aInput の構造が Tuple( ... ) または Tuple(Tuple( ... )) のどちらでも Tuple( ... ) を選択する。
+	 * Chooses Tuple( ... ), if aInput structure in both of Tuple( ... ) or Tuple(Tuple( ... )). <br>
+	 * <br>
+	 * aInput の構造が Tuple( ... ) または Tuple(Tuple( ... )) のどちらでも Tuple( ... ) を選択します。 <br>
 	 * 
 	 * @param aInput
 	 * @return
@@ -157,21 +163,17 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 
 	@Override
 	public Schema outputSchema(Schema aInput) {
-		// このカラムをどう変換するか、という情報にまとめる
-		// インスタンスの使いまわしとかはリファクタ時に対応
-
 		Schema tTargetSchema = getTargetSchema(aInput);
 		Schema tInnerTupleSchema = new Schema();
 
 		List<FieldSchema> tInputFields = tTargetSchema.getFields();
 		List<ReflectionUDFSetting> tReflectUDFSettings = mReflectUDFSettings;
-		// レコードの最上位カラム数と一致します。
 		List<ColumnEvaluationSetting> tColumnEvaluationSettings = new ArrayList<ColumnEvaluationSetting>();
-		// カラム毎のイテレーション
+		// iteration by column
 		for (FieldSchema tFieldSchema : tInputFields) {
 			boolean tEvaluation = false;
 			ColumnEvaluationSetting tSetting = new ColumnEvaluationSetting();
-			// 評価方法毎のイテレーション
+			// iteration by evaluate method
 			for (ReflectionUDFSetting tReflectUDFSetting : tReflectUDFSettings) {
 				String tCurrentFieldAlias = tFieldSchema.alias;
 				if (tReflectUDFSetting.matchesColumnRegex(tCurrentFieldAlias)) {
@@ -189,10 +191,8 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 					}
 				}
 			}
-			// 評価が設定されていないカラムはスルー評価器を設定する
+			// set ThroughColumnEvaluator, if column hasn't evaluate method
 			if (!tEvaluation) {
-				// スルー評価器を設定
-				// かつ。OutputSchema情報を確定できる
 				tSetting.addColumnEvaluator(ThroughColumnEvaluator.INSTANCE);
 				tInnerTupleSchema.add(tFieldSchema);
 			}
@@ -217,7 +217,9 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 	}
 
 	/**
-	 * aInput の構造が Tuple( ... ) または Tuple(Tuple( ... )) のどちらでも Tuple( ... ) を選択する。
+	 * Chooses Tuple( ... ), if aInput structure in both of Tuple( ... ) or Tuple(Tuple( ... )). <br>
+	 * <br>
+	 * aInput の構造が Tuple( ... ) または Tuple(Tuple( ... )) のどちらでも Tuple( ... ) を選択します。 <br>
 	 * 
 	 * @param aInput
 	 * @return

@@ -51,7 +51,7 @@ public class StringableColumnEvaluator implements ColumnEvaluator {
 			tResultBuilder.append(tTarget.mUDF.getClass().getName());
 			return tResultBuilder.toString();
 		} else {
-			throw new IllegalArgumentException("非対応の型が渡されました : " + aTarget);
+			throw new IllegalArgumentException("unsupported Class : " + aTarget);
 		}
 	}
 

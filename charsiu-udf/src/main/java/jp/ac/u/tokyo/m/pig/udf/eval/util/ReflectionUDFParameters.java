@@ -45,7 +45,7 @@ public class ReflectionUDFParameters {
 
 		String[] tParameters = aReflectionUDFParametersString.split(MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_SEPARATOR);
 		for (String tParameterString : tParameters) {
-			// 最上位要素を追加
+			// append top element | 最上位要素を追加
 			DefaultColumnIndexInformation tCurrentColumnIndex = new DefaultColumnIndexInformation(0, aColumnValueFieldSchema, AccessType.FLAT);
 			tColumnIndexs.add(tCurrentColumnIndex);
 			FieldSchema tCurrentField = aColumnValueFieldSchema;
@@ -114,6 +114,7 @@ public class ReflectionUDFParameters {
 					// alias pattern
 					FieldSchema tField = tCurrentField.schema.getField(tAddressAlias);
 					if (tField == null) {
+						// Because there is possibility appointed in Bag{ ... } not Bag{Tuple( ... )} , ignore one layer of schema and look for tAddressAlias .
 						// Bag{Tuple( ... )} ではなく Bag{ ... } で指定された可能性が有るので1階層無視して tAddressAlias を探す
 						if (tCurrentField.type == DataType.BAG) {
 							FieldSchema tBagTupleFieldSchema = tCurrentField.schema.getField(0);

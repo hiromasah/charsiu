@@ -65,7 +65,7 @@ public class StringableColumnAccessor implements ColumnAccessor {
 		while (tCurrentColumnIndex.hasChild()) {
 			ColumnIndexInformation tNextColumnIndex = tCurrentColumnIndex.getChild();
 			if (tNextColumnIndex.getAccessType() == AccessType.SUB_BAG) {
-				// subbag 対象の bag を特定
+				// find a Bag of subbag target
 				tDataSourceBag = DataType.toBag(tDataSource);
 				break;
 			} else {
@@ -88,7 +88,8 @@ public class StringableColumnAccessor implements ColumnAccessor {
 			return;
 		}
 
-		// 次層が Tuple なら無視してその次の index
+		// Set next's next layer of ColumnIndex, if next layer of schema is Tuple.
+		// 次層が Tuple なら無視してその次の index を設定する。
 		ColumnIndexInformation tNextColumnIndex = tCurrentColumnIndex.getChild();
 		int tChildIndex = tNextColumnIndex.getFieldType() == DataType.TUPLE ? tNextColumnIndex.getChild().getIndex() : tNextColumnIndex.getIndex();
 		Iterator<Tuple> tDataSourceBagIterator = tDataSourceBag.iterator();

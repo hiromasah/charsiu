@@ -7,7 +7,6 @@ import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
 public class DefaultColumnIndexInformation implements ColumnIndexInformation {
 	private final int mIndex;
 	private final FieldSchema mFieldSchema;
-	// 親からのアクセス方法
 	private final AccessType mAccessType;
 	private ColumnIndexInformation mChild = null;
 
