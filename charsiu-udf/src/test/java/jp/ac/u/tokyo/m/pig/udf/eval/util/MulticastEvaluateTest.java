@@ -29,11 +29,6 @@ import org.junit.Test;
 
 public class MulticastEvaluateTest {
 
-	// TODO $x アクセスに対応するテスト
-	// {} {()} の構造差を無視して同じAccesserを構成するテスト
-	// {} {()} の構造差を無視して同じスキーマを構成するテスト
-	// TODO 上記のような特殊構造と一般的な構造が混ざっていたときにきちんと評価するメソッドのテスト
-
 	// -----------------------------------------------------------------------------------------------------------------
 
 	private static MulticastEvaluate mMulticastEvaluateSimple;

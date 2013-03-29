@@ -56,10 +56,10 @@ public class StringableColumnAccessor implements ColumnAccessor {
 		return TupleFactory.getInstance().newTupleNoCopy(tTuple);
 	}
 
-	// TODO 実装（ hasChild 時の多階層解析）
 	private void generateChildValue(ArrayList<Object> aResultTuple, ColumnIndexInformation aColumnIndex, Object aColumnValue) throws ExecException {
 		DataBag tDataSourceBag = null;
 
+		// find a Bag of subbag target
 		Object tDataSource = aColumnValue;
 		ColumnIndexInformation tCurrentColumnIndex = aColumnIndex;
 		while (tCurrentColumnIndex.hasChild()) {
@@ -69,26 +69,23 @@ public class StringableColumnAccessor implements ColumnAccessor {
 				tDataSourceBag = DataType.toBag(tDataSource);
 				break;
 			} else {
-				// TODO 実装（プロトタイプ版では１層目が Bag の物しか扱わない、ということにする）
+				// if FLAT access, and tCurrentColumnIndex has child
 				switch (tCurrentColumnIndex.getFieldType()) {
 				case DataType.TUPLE:
-					// tDataSource を child のものに更新、他も併せて更新
-					// continue
-					break;
-				case DataType.INTEGER: // 他 unstructured data
-					// 
-					// return
-					break;
-				case DataType.BAG:
-					// ありえない
-					// subbag 以外で bag にアクセスするのはサポート外。 unsupported exception 投げる。
-					// いや、flat タイプの bag アクセス？ bag そのまま返す。
-					break;
+					// into Tuple
+					tDataSource = DataType.toTuple(tDataSource).get(tNextColumnIndex.getIndex());
+					tCurrentColumnIndex = tNextColumnIndex;
+					continue;
 				default:
-					// aResultTuple.add(e);
-					return;
+					throw new IllegalArgumentException("can't get a child. : " + DataType.findTypeName(tCurrentColumnIndex.getFieldType()) + "\n" +
+							"column value : " + tDataSource + "\n" +
+							"column index information : " + tCurrentColumnIndex);
 				}
 			}
+		}
+		if (tDataSourceBag == null) {
+			aResultTuple.add(tDataSource);
+			return;
 		}
 
 		// 次層が Tuple なら無視してその次の index

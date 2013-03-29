@@ -17,6 +17,7 @@
 package jp.ac.u.tokyo.m.pig.udf.eval.util;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class MulticastEvaluationConstants {
 
@@ -40,6 +41,8 @@ public class MulticastEvaluationConstants {
 		// UDF_REFLECT_MAPPING.put("TupleMax", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMax");
 		// UDF_REFLECT_MAPPING.put("TupleMin", "jp.ac.u.tokyo.m.pig.udf.eval.math.TupleMin");
 	}
+
+	public static final Pattern REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN = Pattern.compile("\\$[0-9]+");
 
 	public static final String REFLECTION_UDF_PARAMETERS_ROOT_COLUMN = "_";
 	public static final String REFLECTION_UDF_PARAMETERS_ACCESSOR = "\\.";

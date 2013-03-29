@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import jp.ac.u.tokyo.m.pig.udf.eval.util.MulticastEvaluationConstants.AccessType;
 import jp.ac.u.tokyo.m.test.TestUtil;
+import junit.framework.Assert;
 
 import org.apache.pig.data.DataType;
 import org.apache.pig.impl.logicalLayer.FrontendException;
@@ -83,6 +84,28 @@ public class ReflectionUDFParametersTest {
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.rate", mInputFieldSchemaSensitive));
 	}
 
+	@Test
+	public void testParseReflectionUDFParameters_SensitiveSchema_SensitiveColumnControl_DollerIndexAccess() throws Throwable {
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsScoreSensitive,
+				ReflectionUDFParameters.parseReflectionUDFParameters("_.score_tuple.$0", mInputFieldSchemaSensitive));
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsRateSensitive,
+				ReflectionUDFParameters.parseReflectionUDFParameters("_.score_tuple.$1", mInputFieldSchemaSensitive));
+	}
+
+	@Test
+	public void testParseReflectionUDFParameters_SensitiveSchema_LooseColumnControl_DollerIndexAccess() throws Throwable {
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsScoreSensitive,
+				ReflectionUDFParameters.parseReflectionUDFParameters("_.$0", mInputFieldSchemaSensitive));
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsRateSensitive,
+				ReflectionUDFParameters.parseReflectionUDFParameters("_.$1", mInputFieldSchemaSensitive));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testParseReflectionUDFParameters_SensitiveSchema_SensitiveColumnControl_DollerIndexAccess_Illegal() throws Throwable {
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsScoreSensitive,
+				ReflectionUDFParameters.parseReflectionUDFParameters("_.$0.$0", mInputFieldSchemaSensitive));
+	}
+
 	// -----------------------------------------------------------------------------------------------------------------
 
 	private static FieldSchema mScoreFieldSchemaLoose;
@@ -119,6 +142,41 @@ public class ReflectionUDFParametersTest {
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.score", mInputFieldSchemaLoose));
 		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsRateLoose,
 				ReflectionUDFParameters.parseReflectionUDFParameters("_.rate", mInputFieldSchemaLoose));
+	}
+
+	@Test
+	public void testParseReflectionUDFParameters_LooseSchema_LooseColumnControl_DollerIndexAccess() throws Throwable {
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsScoreLoose,
+				ReflectionUDFParameters.parseReflectionUDFParameters("_.$0", mInputFieldSchemaLoose));
+		TestUtil.assertEqualsPigObjects(mOutputColumnIndexInformationsRateLoose,
+				ReflectionUDFParameters.parseReflectionUDFParameters("_.$1", mInputFieldSchemaLoose));
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Test
+	public void testDollerIndexPattern() throws Throwable {
+		Assert.assertEquals(
+				true,
+				MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher("$0").matches());
+		Assert.assertEquals(
+				true,
+				MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher("$1").matches());
+		Assert.assertEquals(
+				true,
+				MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher("$9").matches());
+		Assert.assertEquals(
+				true,
+				MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher("$1024").matches());
+		Assert.assertEquals(
+				false,
+				MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher("_").matches());
+		Assert.assertEquals(
+				false,
+				MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher("$").matches());
+		Assert.assertEquals(
+				false,
+				MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher("_.score_tuple.score").matches());
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

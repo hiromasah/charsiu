@@ -75,7 +75,8 @@ public class MulticastEvaluate extends EvalFunc<Tuple> {
 			String tClassName = MulticastEvaluationConstants.UDF_REFLECT_MAPPING.get(tShortClassName);
 			if (tClassName == null) {
 				try {
-					ReflectionUtil.getClassForName(tShortClassName);
+					@SuppressWarnings("unused")
+					EvalFunc<?> tUDF = (EvalFunc<?>) ReflectionUtil.getClassForName(tShortClassName).newInstance();
 				} catch (Throwable e) {
 					// if can't find tShortClassName as FQCN
 					throw new IllegalArgumentException("unknown UDF : " + tShortClassName + "\n" +

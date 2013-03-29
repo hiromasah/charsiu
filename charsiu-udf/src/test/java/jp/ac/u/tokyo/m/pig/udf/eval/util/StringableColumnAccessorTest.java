@@ -29,6 +29,8 @@ import org.junit.Test;
 
 public class StringableColumnAccessorTest {
 
+	// -----------------------------------------------------------------------------------------------------------------
+
 	private static StringableColumnAccessor mInstance;
 	private static String mInstanceString;
 
@@ -80,6 +82,8 @@ public class StringableColumnAccessorTest {
 		mInstanceStringSimple = "*0,120,0,*0,110,1,*0,10,1,";
 	}
 
+	// -----------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * Test of String => StringableColumnAccessor
 	 */
@@ -120,5 +124,79 @@ public class StringableColumnAccessorTest {
 				mInstanceStringSimple,
 				StringableColumnAccessor.toString(mInstanceDefaultColumnAccessorSimple));
 	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	@Test
+	public void testGenerateValue_SimpleSubbagAccessor() {
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(TestUtil.createBag(1, 1, 10, 100)),
+				StringableColumnAccessor.parse("*0,120,0,*0,110,1,*0,10,1,")
+						.generate(TestUtil.createBag(5, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500)));
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(TestUtil.createBag(1, 2, 20, 200)),
+				StringableColumnAccessor.parse("*0,120,0,*0,110,1,*1,10,1,")
+						.generate(TestUtil.createBag(5, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500)));
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(TestUtil.createBag(1, 5, 50, 500)),
+				StringableColumnAccessor.parse("*0,120,0,*0,110,1,*4,10,1,")
+						.generate(TestUtil.createBag(5, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500)));
+	}
+
+	@Test
+	public void testGenerateValue_FlatBagAccessor() {
+		// FLAT type access : Bag
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(TestUtil.createBag(5, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500)),
+				StringableColumnAccessor.parse("*0,120,0,")
+						.generate(TestUtil.createBag(5, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500)));
+	}
+
+	@Test
+	public void testGenerateValue_FlatInnerBagAccessor() {
+		// FLAT type access : inner Bag
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(TestUtil.createBag(5, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500)),
+				StringableColumnAccessor.parse("*0,110,0,*0,120,0,")
+						.generate(TestUtil.createTuple(TestUtil.createBag(5, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500))));
+	}
+
+	@Test
+	public void testGenerateValue_FlatValueAccessor() {
+		// FLAT type access : unstructured value
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(1),
+				StringableColumnAccessor.parse("*0,10,0,")
+						.generate(1));
+	}
+
+	@Test
+	public void testGenerateValue_FlatInnerValueAccessor() {
+		// FLAT type access : inner unstructured value
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(1),
+				StringableColumnAccessor.parse("*0,110,0,*0,10,0,")
+						.generate(TestUtil.createTuple(1, 2, 3, 4, 5)));
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(2),
+				StringableColumnAccessor.parse("*0,110,0,*1,10,0,")
+						.generate(TestUtil.createTuple(1, 2, 3, 4, 5)));
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(5),
+				StringableColumnAccessor.parse("*0,110,0,*4,10,0,")
+						.generate(TestUtil.createTuple(1, 2, 3, 4, 5)));
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGenerateValue_IllegalAccessInformation() {
+		TestUtil.assertEqualsPigObjects(
+				TestUtil.createTuple(1),
+				StringableColumnAccessor.parse("*0,110,0,*0,10,0,*0,10,0,")
+						.generate(TestUtil.createTuple(1, 2, 3, 4, 5)));
+
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
 
 }

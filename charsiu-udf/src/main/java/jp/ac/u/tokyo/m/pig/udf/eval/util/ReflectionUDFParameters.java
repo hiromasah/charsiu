@@ -30,86 +30,144 @@ public class ReflectionUDFParameters {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	private final List<ColumnIndexInformation> mColumnNames;
+	private final List<ColumnIndexInformation> mColumnIndexs;
 	private final Schema mInputSchema;
 
 	// -----------------------------------------------------------------------------------------------------------------
 
 	public ReflectionUDFParameters(String aReflectionUDFParametersString, FieldSchema aColumnValueFieldSchema) throws FrontendException {
-		mColumnNames = parseReflectionUDFParameters(aReflectionUDFParametersString, aColumnValueFieldSchema);
-		mInputSchema = generateInputSchema(mColumnNames);
+		mColumnIndexs = parseReflectionUDFParameters(aReflectionUDFParametersString, aColumnValueFieldSchema);
+		mInputSchema = generateInputSchema(mColumnIndexs);
 	}
 
-	// TODO $x access to column
 	static List<ColumnIndexInformation> parseReflectionUDFParameters(String aReflectionUDFParametersString, FieldSchema aColumnValueFieldSchema) throws FrontendException {
-		List<ColumnIndexInformation> tColumnNames = new ArrayList<ColumnIndexInformation>();
+		List<ColumnIndexInformation> tColumnIndexs = new ArrayList<ColumnIndexInformation>();
 
 		String[] tParameters = aReflectionUDFParametersString.split(MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_SEPARATOR);
 		for (String tParameterString : tParameters) {
 			// 最上位要素を追加
-			DefaultColumnIndexInformation tCurrentColumnName = new DefaultColumnIndexInformation(0, aColumnValueFieldSchema, AccessType.FLAT);
-			tColumnNames.add(tCurrentColumnName);
+			DefaultColumnIndexInformation tCurrentColumnIndex = new DefaultColumnIndexInformation(0, aColumnValueFieldSchema, AccessType.FLAT);
+			tColumnIndexs.add(tCurrentColumnIndex);
 			FieldSchema tCurrentField = aColumnValueFieldSchema;
 			String[] tAddresses = tParameterString.split(MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_ACCESSOR);
 			int tAddressesLength = tAddresses.length;
 			for (int tIndex = 1; tIndex < tAddressesLength; tIndex++) {
-				String tAddressAlias = tAddresses[tIndex];
-				FieldSchema tField = tCurrentField.schema.getField(tAddressAlias);
-				if (tField == null) {
-					// Bag{Tuple( ... )} ではなく Bag{ ... } で指定された可能性が有るので1階層無視して tAddressAlias を探す
+				// find a child
+				final String tAddressAlias = tAddresses[tIndex].trim();
+				if (MulticastEvaluationConstants.REFLECTION_UDF_PARAMETERS_DOLLAR_INDEX_PATTERN.matcher(tAddressAlias).matches()) {
+					// "//$[0-9]+" pattern
+					int tPosition = Integer.parseInt(tAddressAlias.substring(1));
 					if (tCurrentField.type == DataType.BAG) {
+						if (tIndex != tAddressesLength - 1)
+							throw new IllegalArgumentException("can't access inner element in bag's child. : " + aReflectionUDFParametersString);
 						FieldSchema tBagTupleFieldSchema = tCurrentField.schema.getField(0);
+						if (tCurrentField.schema.size() == 1 && tBagTupleFieldSchema.type == DataType.TUPLE) {
+							// bag.tuple.getFiled($x)
+							try {
+								FieldSchema tField = tCurrentField.schema.getField(0).schema.getField(tPosition);
+								// BagTuple Scheam
+								DefaultColumnIndexInformation tChildColumnIndex = new DefaultColumnIndexInformation(0, tBagTupleFieldSchema, AccessType.SUB_BAG);
+								tCurrentColumnIndex.setChild(tChildColumnIndex);
+								tCurrentColumnIndex = tChildColumnIndex;
+								// Column Schema
+								DefaultColumnIndexInformation tChildChildColumnIndex = new DefaultColumnIndexInformation(tPosition, tField, AccessType.SUB_BAG);
+								tChildColumnIndex.setChild(tChildChildColumnIndex);
+								tChildColumnIndex = tChildChildColumnIndex;
+
+								tCurrentField = tField;
+								break;
+							} catch (Throwable e) {
+								throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField, e);
+							}
+						} else {
+							// bag.getFiled($x)
+							try {
+								FieldSchema tField = tCurrentField.schema.getField(tPosition);
+								DefaultColumnIndexInformation tChildColumnIndex = new DefaultColumnIndexInformation(tPosition, tField, AccessType.SUB_BAG);
+								tCurrentColumnIndex.setChild(tChildColumnIndex);
+								tCurrentColumnIndex = tChildColumnIndex;
+								tCurrentField = tField;
+								break;
+							} catch (Throwable e) {
+								throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField, e);
+							}
+						}
+					} else {
+						// isn't bag
 						try {
-							tField = tBagTupleFieldSchema.schema.getField(tAddressAlias);
+							FieldSchema tField = tCurrentField.schema.getField(tPosition);
+							AccessType tAccessType = null;
+							if (tCurrentColumnIndex.getFieldType() == DataType.TUPLE && tCurrentColumnIndex.getAccessType() == AccessType.SUB_BAG)
+								tAccessType = AccessType.SUB_BAG;
+							else
+								tAccessType = AccessType.FLAT;
+							DefaultColumnIndexInformation tChildColumnIndex = new DefaultColumnIndexInformation(tPosition, tField, tAccessType);
+							tCurrentColumnIndex.setChild(tChildColumnIndex);
+							tCurrentColumnIndex = tChildColumnIndex;
+							tCurrentField = tField;
+							continue;
 						} catch (Throwable e) {
 							throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField, e);
 						}
-						if (tField != null) {
-							// BagTuple Scheam
-							// String tChildColumnAlias = tBagTupleFieldSchema.alias == null ? "" : tBagTupleFieldSchema.alias;
-							DefaultColumnIndexInformation tChildColumnName = new DefaultColumnIndexInformation(0, tBagTupleFieldSchema, AccessType.SUB_BAG);
-							tCurrentColumnName.setChild(tChildColumnName);
-							tCurrentColumnName = tChildColumnName;
-							// Column Schema
-							DefaultColumnIndexInformation tChildChildColumnName = new DefaultColumnIndexInformation(tBagTupleFieldSchema.schema.getPosition(tAddressAlias), tField, AccessType.SUB_BAG);
-							tChildColumnName.setChild(tChildChildColumnName);
-							tChildColumnName = tChildChildColumnName;
+					}
+				} else {
+					// alias pattern
+					FieldSchema tField = tCurrentField.schema.getField(tAddressAlias);
+					if (tField == null) {
+						// Bag{Tuple( ... )} ではなく Bag{ ... } で指定された可能性が有るので1階層無視して tAddressAlias を探す
+						if (tCurrentField.type == DataType.BAG) {
+							FieldSchema tBagTupleFieldSchema = tCurrentField.schema.getField(0);
+							try {
+								tField = tBagTupleFieldSchema.schema.getField(tAddressAlias);
+							} catch (Throwable e) {
+								throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField, e);
+							}
+							if (tField != null) {
+								// BagTuple Scheam
+								DefaultColumnIndexInformation tChildColumnIndex = new DefaultColumnIndexInformation(0, tBagTupleFieldSchema, AccessType.SUB_BAG);
+								tCurrentColumnIndex.setChild(tChildColumnIndex);
+								tCurrentColumnIndex = tChildColumnIndex;
+								// Column Schema
+								DefaultColumnIndexInformation tChildChildColumnIndex = new DefaultColumnIndexInformation(tBagTupleFieldSchema.schema.getPosition(tAddressAlias), tField, AccessType.SUB_BAG);
+								tChildColumnIndex.setChild(tChildChildColumnIndex);
+								tChildColumnIndex = tChildChildColumnIndex;
 
-							tCurrentField = tField;
-							continue;
+								tCurrentField = tField;
+								continue;
+							} else
+								throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField);
 						} else
 							throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField);
-					} else
-						throw new IllegalArgumentException(tAddressAlias + " is not found in the schema : " + tCurrentField);
-				} else {
-					AccessType tAccessType = null;
-					if (tCurrentColumnName.getFieldType() == DataType.BAG
-							|| (tCurrentColumnName.getFieldType() == DataType.TUPLE && tCurrentColumnName.getAccessType() == AccessType.SUB_BAG))
-						tAccessType = AccessType.SUB_BAG;
-					else
-						tAccessType = AccessType.FLAT;
-					DefaultColumnIndexInformation tChildColumnName = new DefaultColumnIndexInformation(tCurrentField.schema.getPosition(tAddressAlias), tField, tAccessType);
-					tCurrentColumnName.setChild(tChildColumnName);
-					tCurrentColumnName = tChildColumnName;
-					tCurrentField = tField;
-					continue;
+					} else {
+						AccessType tAccessType = null;
+						if (tCurrentColumnIndex.getFieldType() == DataType.BAG
+								|| (tCurrentColumnIndex.getFieldType() == DataType.TUPLE && tCurrentColumnIndex.getAccessType() == AccessType.SUB_BAG))
+							tAccessType = AccessType.SUB_BAG;
+						else
+							tAccessType = AccessType.FLAT;
+						DefaultColumnIndexInformation tChildColumnIndex = new DefaultColumnIndexInformation(tCurrentField.schema.getPosition(tAddressAlias), tField, tAccessType);
+						tCurrentColumnIndex.setChild(tChildColumnIndex);
+						tCurrentColumnIndex = tChildColumnIndex;
+						tCurrentField = tField;
+						continue;
+					}
 				}
 			}
 		}
 
-		return tColumnNames;
+		return tColumnIndexs;
 	}
 
-	static Schema generateInputSchema(List<ColumnIndexInformation> aColumnNames) throws FrontendException {
+	static Schema generateInputSchema(List<ColumnIndexInformation> aColumnIndexs) throws FrontendException {
 		Schema tSchema = new Schema();
-		for (ColumnIndexInformation tColumnName : aColumnNames) {
-			while (tColumnName.hasChild()) {
-				tColumnName = tColumnName.getChild();
+		for (ColumnIndexInformation tColumnIndex : aColumnIndexs) {
+			while (tColumnIndex.hasChild()) {
+				tColumnIndex = tColumnIndex.getChild();
 			}
-			if (tColumnName.getAccessType() == AccessType.FLAT)
-				tSchema.add(tColumnName.getFieldSchema());
+			if (tColumnIndex.getAccessType() == AccessType.FLAT)
+				tSchema.add(tColumnIndex.getFieldSchema());
 			else {
-				tSchema.add(new FieldSchema(null, new Schema(new FieldSchema(null, tColumnName.getFieldType())), DataType.BAG));
+				tSchema.add(new FieldSchema(null, new Schema(new FieldSchema(null, tColumnIndex.getFieldType())), DataType.BAG));
 			}
 		}
 		return tSchema;
@@ -122,7 +180,7 @@ public class ReflectionUDFParameters {
 	}
 
 	public List<ColumnIndexInformation> getColumnIndexInformations() {
-		return mColumnNames;
+		return mColumnIndexs;
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
