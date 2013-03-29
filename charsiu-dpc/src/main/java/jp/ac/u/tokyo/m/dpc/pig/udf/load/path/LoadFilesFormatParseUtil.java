@@ -40,16 +40,16 @@ public class LoadFilesFormatParseUtil {
 	 * @param aLoadFilesFormat
 	 *            load対象指定文字列
 	 * @param aConfiguration
+	 * @param aDpcDataDirectory
 	 * @return
 	 *         path collection included aLoadFilesFormat<br>
 	 *         load対象の範囲に含まれるディレクトリパス（重複除去）<br>
 	 */
-	static public Collection<String> parseLoadFilesFormat(String aLoadFilesFormat, Configuration aConfiguration) {
+	static public Collection<String> parseLoadFilesFormat(String aLoadFilesFormat, Configuration aConfiguration, String aDpcDataDirectory) {
 		String[] tLoadFilesFormatSplits = aLoadFilesFormat.split(SpecificConstants.LOAD_PATH_SEPARATOR);
-		String tDpcDataDirectory = aConfiguration.get(SpecificConstants.CONFIGURATION_KEY_DPC_DATA_DIRECTORY, SpecificConstants.DPC_DATA_DIRECTORY_DEFAULT);
 		LinkedHashSet<String> tLoadDirectores = new LinkedHashSet<String>();
 		for (String tCurrentLoadFilesFormatSplit : tLoadFilesFormatSplits) {
-			parseLoadFilesFormatSplit(tLoadDirectores, tCurrentLoadFilesFormatSplit.trim(), tDpcDataDirectory);
+			parseLoadFilesFormatSplit(tLoadDirectores, tCurrentLoadFilesFormatSplit.trim(), aDpcDataDirectory);
 		}
 		return tLoadDirectores;
 	}

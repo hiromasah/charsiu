@@ -20,9 +20,6 @@ public interface SpecificConstants {
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	public static final String CONFIGURATION_KEY_DPC_DATA_S3_PATH = "charsiu.dpc.data.s3.path";
-	public static final String DPC_DATA_S3_PATH_DEFAULT = "s3://dpcemr.data/dpc/data";
-
 	/**
 	 * key of the DPC data storage base directory <br>
 	 * Hadoop の conf に設定する DPCデータ格納基底ディレクトリ の key <br>
@@ -31,9 +28,9 @@ public interface SpecificConstants {
 
 	/**
 	 * default value of the DPC data storage base directory <br>
-	 * HDFS上のデフォルトの DPCデータ格納基底ディレクトリ <br>
+	 * FS上のデフォルトの DPCデータ格納基底ディレクトリ <br>
 	 */
-	public static final String DPC_DATA_DIRECTORY_DEFAULT = "/dpc/data";
+	public static final String DPC_DATA_DIRECTORY_DEFAULT = "s3://dpcemr.data/dpc/data";
 
 	// -----------------------------------------------------------------------------------------------------------------
 
