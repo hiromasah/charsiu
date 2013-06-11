@@ -30,7 +30,7 @@ public interface SpecificConstants {
 	 * default value of the DPC data storage base directory <br>
 	 * FS上のデフォルトの DPCデータ格納基底ディレクトリ <br>
 	 */
-	public static final String DPC_DATA_DIRECTORY_DEFAULT = "s3://dpcemr.data/dpc/data";
+	public static final String DPC_DATA_DIRECTORY_DEFAULT = "s3://dpcemr.data/[range,0,99,digit,2]";
 
 	// -----------------------------------------------------------------------------------------------------------------
 
