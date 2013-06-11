@@ -17,6 +17,7 @@
 package jp.ac.u.tokyo.m.dpc.pig.udf.load;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -194,10 +195,10 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 	 *         aLocation に含まれる全ての FileStatus<br>
 	 */
 	private List<FileStatus> getUnfilteredLoadTargetFileStatusList(String aLocation, Configuration aConfiguration) throws IOException {
-		String tDpcDataDirectory = aConfiguration.get(SpecificConstants.CONFIGURATION_KEY_DPC_DATA_DIRECTORY, SpecificConstants.DPC_DATA_DIRECTORY_DEFAULT);
-		Path tDpcDataDirectoryPath = new Path(tDpcDataDirectory);
-		FileSystem tFileSystem = tDpcDataDirectoryPath.getFileSystem(aConfiguration);
-		Collection<String> tBaseDirectories = LoadFilesFormatParseUtil.parseLoadFilesFormat(aLocation, aConfiguration, tDpcDataDirectory);
+		String tDpcDataDirectoryExpression = aConfiguration.get(SpecificConstants.CONFIGURATION_KEY_DPC_DATA_DIRECTORY, SpecificConstants.DPC_DATA_DIRECTORY_DEFAULT);
+		List<String> tDpcDataDirectories = parseRangeControlTerm(tDpcDataDirectoryExpression);
+		FileSystem tFileSystem = new Path(tDpcDataDirectories.get(0)).getFileSystem(aConfiguration);
+		Collection<String> tBaseDirectories = LoadFilesFormatParseUtil.parseLoadFilesFormat(aLocation, aConfiguration, tDpcDataDirectories);
 		ArrayList<FileStatus> tInputFileStatusList = new ArrayList<FileStatus>();
 		Iterator<String> tBaseDirectoriesIterator = tBaseDirectories.iterator();
 		while (tBaseDirectoriesIterator.hasNext()) {
@@ -206,12 +207,57 @@ public class LoadDPC extends LoadFunc implements LoadMetadata {
 				FileStatus tCurrentBaseDirectoryFileStatus = tFileSystem.getFileStatus(new Path(tCurrentBaseDirectory));
 				tInputFileStatusList.add(tCurrentBaseDirectoryFileStatus);
 			} catch (Exception e) {
-				mLog.warn("dir \"" + tCurrentBaseDirectory + "\" does not exist");
+				if (mLog.isDebugEnabled())
+					mLog.debug("dir \"" + tCurrentBaseDirectory + "\" does not exist");
 				continue;
 			}
 		}
 		List<FileStatus> tFileStatusRecursivelyList = MapRedUtil.getAllFileRecursively(tInputFileStatusList, aConfiguration);
 		return tFileStatusRecursivelyList;
+	}
+
+	private static String CONTROL_TERM_OPENER = "[";
+	private static String CONTROL_TERM_CLOSER = "]";
+	private static final String CONTROL_TERM_SEPARATOR = ",";
+
+	/**
+	 * parse a ControlTerm:Range.
+	 * "hoge[range,0,2,digit,2]" -> List["hoge00", "hoge01", "hoge02"]
+	 * 
+	 * @param aTarget
+	 * @return
+	 */
+	public static List<String> parseRangeControlTerm(String aTarget) {
+		ArrayList<String> tResult = new ArrayList<String>();
+		int tIndexTermOpener = aTarget.indexOf(CONTROL_TERM_OPENER);
+		if (tIndexTermOpener < 0) {
+			tResult.add(aTarget);
+			return tResult;
+		}
+		int tIndexTermCloser = aTarget.indexOf(CONTROL_TERM_CLOSER, tIndexTermOpener);
+		if (tIndexTermCloser < 0) {
+			tResult.add(aTarget);
+			return tResult;
+		}
+		String tControlTermWithQuote = aTarget.substring(tIndexTermOpener, tIndexTermCloser + 1);
+		String tControlTerm = aTarget.substring(tIndexTermOpener + 1, tIndexTermCloser);
+		String[] tControlTermSplits = tControlTerm.split(CONTROL_TERM_SEPARATOR);
+		String tControlTermType = tControlTermSplits[0].trim();
+		if (tControlTermType.equals("range")) {
+			int tRangeStart = Integer.parseInt(tControlTermSplits[1]);
+			int tRangeEnd = Integer.parseInt(tControlTermSplits[2]);
+			int tDigit = Integer.parseInt(tControlTermSplits[4]);
+			NumberFormat tNumberFormat = NumberFormat.getNumberInstance();
+			tNumberFormat.setGroupingUsed(false);
+			tNumberFormat.setMinimumIntegerDigits(tDigit);
+			for (int tRangeIndex = tRangeStart; tRangeIndex <= tRangeEnd; tRangeIndex++) {
+				tResult.add(aTarget.replace(tControlTermWithQuote, tNumberFormat.format(tRangeIndex)));
+			}
+			return tResult;
+		} else {
+			tResult.add(aTarget);
+			return tResult;
+		}
 	}
 
 	/**

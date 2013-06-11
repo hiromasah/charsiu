@@ -18,6 +18,7 @@ package jp.ac.u.tokyo.m.dpc.pig.udf.load.path;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import jp.ac.u.tokyo.m.dpc.specific.SpecificConstants;
@@ -40,22 +41,22 @@ public class LoadFilesFormatParseUtil {
 	 * @param aLoadFilesFormat
 	 *            load対象指定文字列
 	 * @param aConfiguration
-	 * @param aDpcDataDirectory
+	 * @param aDpcDataDirectories
 	 * @return
 	 *         path collection included aLoadFilesFormat<br>
 	 *         load対象の範囲に含まれるディレクトリパス（重複除去）<br>
 	 */
-	static public Collection<String> parseLoadFilesFormat(String aLoadFilesFormat, Configuration aConfiguration, String aDpcDataDirectory) {
+	static public Collection<String> parseLoadFilesFormat(String aLoadFilesFormat, Configuration aConfiguration, List<String> aDpcDataDirectories) {
 		String[] tLoadFilesFormatSplits = aLoadFilesFormat.split(SpecificConstants.LOAD_PATH_SEPARATOR);
 		LinkedHashSet<String> tLoadDirectores = new LinkedHashSet<String>();
 		for (String tCurrentLoadFilesFormatSplit : tLoadFilesFormatSplits) {
-			parseLoadFilesFormatSplit(tLoadDirectores, tCurrentLoadFilesFormatSplit.trim(), aDpcDataDirectory);
+			parseLoadFilesFormatSplit(tLoadDirectores, tCurrentLoadFilesFormatSplit.trim(), aDpcDataDirectories);
 		}
 		return tLoadDirectores;
 	}
 
 	private static void parseLoadFilesFormatSplit(
-			LinkedHashSet<String> aLoadDirectores, String aLoadFilesFormatSplit, String aDpcDataDirectory) {
+			LinkedHashSet<String> aLoadDirectores, String aLoadFilesFormatSplit, List<String> aDpcDataDirectories) {
 		// aLoadFilesFormatSplit :: "yyyy" or "yyyy-yyyy" or file-path
 		// aLoadFilesFormatSplit :: "2010", "2008-2010" が渡される。左記のフォーマットでない場合は直接パスを指定したものと判断。
 		String[] tLoadFilesFormatSplitRangeStartEnd = aLoadFilesFormatSplit.split(SpecificConstants.LOAD_PATH_RANGE_CONNECTOR);
@@ -70,7 +71,7 @@ public class LoadFilesFormatParseUtil {
 				parseLoadFilesFormatRangeYear(aLoadDirectores,
 						tLoadFilesFormatSplitRangeStart,
 						tLoadFilesFormatSplitRangeEnd,
-						aDpcDataDirectory);
+						aDpcDataDirectories);
 			} else {
 				// if tPatternYear is not "yyyy-yyyy" pattern, aLoadFilesFormatSplit is file path.
 				// LoadFilesFormat の年指定でない場合は、直接ファイルまたはディレクトリが指定されたものとして、そのまま追加する。
@@ -80,7 +81,7 @@ public class LoadFilesFormatParseUtil {
 			// if not range specification | 範囲指定でない場合
 			if (tPatternYear.matcher(aLoadFilesFormatSplit).matches()) {
 				// "yyyy"
-				addLoadDirectoresInYear(aLoadDirectores, aLoadFilesFormatSplit, aDpcDataDirectory);
+				addLoadDirectoresInYear(aLoadDirectores, aLoadFilesFormatSplit, aDpcDataDirectories);
 			} else {
 				// if tPatternYear is not "yyyy-yyyy" pattern, aLoadFilesFormatSplit is file path.
 				// LoadFilesFormat の年指定でない場合は、直接ファイルまたはディレクトリが指定されたものとして、そのまま追加する。
@@ -94,22 +95,24 @@ public class LoadFilesFormatParseUtil {
 			LinkedHashSet<String> aLoadDirectores,
 			String tLoadFilesFormatSplitRangeStart,
 			String tLoadFilesFormatSplitRangeEnd,
-			String aDpcDataDirectory) throws NumberFormatException {
+			List<String> aDpcDataDirectories) throws NumberFormatException {
 		Integer tRangeStartYear = Integer.parseInt(tLoadFilesFormatSplitRangeStart);
 		Integer tRangeEndYear = Integer.parseInt(tLoadFilesFormatSplitRangeEnd);
 		while (tRangeStartYear <= tRangeEndYear) {
-			addLoadDirectoresInYear(aLoadDirectores, String.valueOf(tRangeStartYear++), aDpcDataDirectory);
+			addLoadDirectoresInYear(aLoadDirectores, String.valueOf(tRangeStartYear++), aDpcDataDirectories);
 		}
 	}
 
 	private static void addLoadDirectoresInYear(
-			LinkedHashSet<String> aLoadDirectores, String aLoadFilesFormatSplit, String aDpcDataDirectory) {
-		StringBuilder tDirectoryStructureBuilder = new StringBuilder();
-		tDirectoryStructureBuilder.append(aDpcDataDirectory);
-		tDirectoryStructureBuilder.append('/');
-		tDirectoryStructureBuilder.append(aLoadFilesFormatSplit);
-		tDirectoryStructureBuilder.append('/');
-		aLoadDirectores.add(tDirectoryStructureBuilder.toString());
+			LinkedHashSet<String> aLoadDirectores, String aLoadFilesFormatSplit, List<String> aDpcDataDirectories) {
+		for (String tDpcDataDirectory : aDpcDataDirectories) {
+			StringBuilder tDirectoryStructureBuilder = new StringBuilder();
+			tDirectoryStructureBuilder.append(tDpcDataDirectory);
+			tDirectoryStructureBuilder.append('/');
+			tDirectoryStructureBuilder.append(aLoadFilesFormatSplit);
+			tDirectoryStructureBuilder.append('/');
+			aLoadDirectores.add(tDirectoryStructureBuilder.toString());
+		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
