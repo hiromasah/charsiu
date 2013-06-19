@@ -21,16 +21,38 @@ public interface SpecificConstants {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	/**
+	 * key of the DPC data index file base directory <br>
+	 * Hadoop の conf に設定する DPCデータインデックスファイル格納基底ディレクトリ の key <br>
+	 */
+	public static final String CONFIGURATION_KEY_DPC_DATA_INDEXES_BASE_DIRECTORY = "charsiu.dpc.data.indexes.basedir";
+
+	/**
+	 * default value of the DPC data index file base directory <br>
+	 * デフォルトの DPCデータインデックスファイル格納基底ディレクトリ <br>
+	 */
+	public static final String DPC_DATA_INDEXES_BASE_DIRECTORY_DEFAULT = "s3://dpcemr.data/indexes";
+
+	/**
+	 * extension of the DPC data index file <br>
+	 * DPCデータインデックスファイルの拡張子 <br>
+	 */
+	public static final String DPC_DATA_INDEXES_FILE_EXTENSION = ".txt";
+
+	public static final String DPC_DATA_INDEXES_FILE_COMMENT_LINE_PREFIX = "#";
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	/**
 	 * key of the DPC data storage base directory <br>
 	 * Hadoop の conf に設定する DPCデータ格納基底ディレクトリ の key <br>
 	 */
-	public static final String CONFIGURATION_KEY_DPC_DATA_DIRECTORY = "charsiu.dpc.data.dir";
+	// public static final String CONFIGURATION_KEY_DPC_DATA_DIRECTORY = "charsiu.dpc.data.dir";
 
 	/**
 	 * default value of the DPC data storage base directory <br>
 	 * FS上のデフォルトの DPCデータ格納基底ディレクトリ <br>
 	 */
-	public static final String DPC_DATA_DIRECTORY_DEFAULT = "s3://dpcemr.data/[range,0,99,digit,2]";
+	// public static final String DPC_DATA_DIRECTORY_DEFAULT = "s3://dpcemr.data/[range,0,99,digit,2]";
 
 	// -----------------------------------------------------------------------------------------------------------------
 
