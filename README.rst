@@ -11,7 +11,7 @@ Quick Start
 
   Download https://raw.github.com/wiki/hiromasah/charsiu/releases/charsiu-udf-1.1.jar 
 
-  Write "register /path/to/charsiu-udf-1.0.jar;" into Pig script.
+  Write "register /path/to/charsiu-udf-1.1.jar;" into Pig script.
 
 AUTHOR
 -------
@@ -28,6 +28,14 @@ Apache License Version 2.0
 
 Update history
 ---------
+Release charsiu-dpc-2012.3 2013/08/21
+~~~~~~~~~
+* added DPC schema of 2012
+
+Release charsiu-dpc-2011.3 2013/07/20
+~~~~~~~~~
+* changed DPC data input method to index file method for S3
+
 Release charsiu-udf-1.1/charsiu-dpc-2011.1 2013/03/29
 ~~~~~~~~~
 * added UDF MulticastEvaluate, LoadDataWithSchema
