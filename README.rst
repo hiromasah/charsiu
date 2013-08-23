@@ -28,6 +28,10 @@ Apache License Version 2.0
 
 Update history
 ---------
+Release charsiu-dpc-2012.4 2013/08/24
+~~~~~~~~~
+* fixed file name of 2012/ff1.schema
+
 Release charsiu-dpc-2012.3 2013/08/21
 ~~~~~~~~~
 * added DPC schema of 2012
